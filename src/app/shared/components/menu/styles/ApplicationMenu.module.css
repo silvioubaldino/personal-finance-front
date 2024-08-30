@@ -1,0 +1,45 @@
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu {
+  display: flex;
+  gap: 10px;
+  height: max-content;
+  align-items: center;
+}
+
+.hr-shrink {
+  display: none;
+}
+
+.hr-expanded {
+  flex-grow: 1;
+  background-color: #fff;
+  height: 3px;
+}
+
+.group-options {
+  display: flex;
+  height: 60px;
+  align-items: center;
+  gap: 10px;
+}
+
+.selected-option {
+  background-color: #262626;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+}
+
+.option:hover {
+  background-color: #262626;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  cursor: pointer;
+}

@@ -1,0 +1,19 @@
+.button {
+  background-color: transparent;
+  border: none;
+  border-radius: 100%;
+  height: fit-content;
+  padding: 8px;
+}
+
+.button:active {
+  background-color: #141414;
+}
+
+.button:hover {
+  background-color: #262626;
+  border-radius: 100%;
+  width: fit-content;
+  height: fit-content;
+  cursor: pointer;
+}
