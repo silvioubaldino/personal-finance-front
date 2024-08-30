@@ -31,7 +31,7 @@ const FilterMonthsMode = () => {
   return (
     <section className={styles.mainsection}>
 
-      <h2 className={styles["mode-text"]}>mês</h2>
+      <h2 className={styles["mode-text"]}>período</h2>
 
       <div className={styles["month-filter-wrapper"]}>
         <button onClick={() => setCurrentMonth(monsthsPortuguese[monsthsPortuguese.findIndex(e => e.toLowerCase() === currentMonth.toLowerCase()) - 1])} className={styles["next-prev-button"]}>{"<<"}</button>
