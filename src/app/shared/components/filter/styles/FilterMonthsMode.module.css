@@ -1,0 +1,81 @@
+.mainsection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+.month-filter-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.month-name-selected {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.mode-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.month-name-container {
+  display: flex;
+  align-items: center;
+  max-width: 200px; /* Define um máximo para controlar a largura */
+  min-width: 250px;
+  overflow-x: auto;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #746f6f;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  padding: 10px;
+}
+
+.month-name {
+  font-size: 16px;
+  font-weight: 100;
+  margin-right: 20px;
+  color: #b0b0b0;
+  flex-shrink: 0; /* Impede que os itens encolham para caber no contêiner */
+}
+
+.month-name-selected {
+  font-size: 16px;
+  font-weight: 900;
+  margin-right: 20px;
+  color: #e7e2e2;
+  flex-shrink: 0; /* Impede que os itens encolham para caber no contêiner */
+}
+
+.next-prev-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  cursor: pointer;
+  color: #222221;
+  font-size: 1.2rem;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.month-name-container::-webkit-scrollbar {
+  height: 6px; /* Largura do scrollbar */
+}
+
+.month-name-container::-webkit-scrollbar-track {
+  background: rgba(255, 166, 0, 0); /* Cor da área de rastreamento */
+}
+
+.month-name-container::-webkit-scrollbar-thumb {
+  background-color: #222221; /* Cor do thumb do scrollbar */
+  border-radius: 20px;
+  border: 3px solid #222221;
+}
