@@ -1,6 +1,10 @@
 .main {
   display: flex;
   flex-direction: column;
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  align-items: center;
 }
 
 .menu {
