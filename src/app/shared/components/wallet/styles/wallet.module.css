@@ -1,0 +1,36 @@
+/* saldoTotal.module.css */
+.container {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #1E1E1E;
+    max-width: 400px;
+    margin: 0;
+}
+
+.label {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #9F9F9F;
+    margin-bottom: 10px;
+}
+
+.value {
+    font-size: 1.5em;
+    color: #4caf50;
+    margin-bottom: 20px;
+}
+
+.list {
+    margin-top: 20px;
+    color: #9F9F9F;
+}
+
+.listItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.listItem span {
+    font-size: 1em;
+}
