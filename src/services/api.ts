@@ -13,6 +13,16 @@ export type Wallets = {
     balance: number;
 }
 
+export type Movement = {
+    id?: string;
+    description: string;
+    category: string;
+    subcategory?: string;
+    date: string;
+    amount: number;
+    wallet: string;
+};
+
 const api = axios.create({
     baseURL: baseUrl,
     headers: {
@@ -54,6 +64,33 @@ export const getWallets = async () => {
     try {
         const response = await api.get('/wallets');
         return toWallets(response.data);
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+const toMovements = (response: any): Movement[] => {
+    return response.map((movement: any) => ({
+        id: movement.id,
+        description: movement.description,
+        category: movement.category.description,
+        subcategory: movement.subcategory?.description,
+        date: movement.date,
+        amount: movement.amount,
+        wallet: movement.wallet.description
+    }));
+}
+
+export const getMovements = async (from: string, to: string): Promise<Movement[]> => {
+    try {
+        const response = await api.get('/movements/period', {
+            params: {
+                from,
+                to
+            }
+        });
+        return toMovements(response.data);
     } catch (error) {
         console.error(error);
         throw error;
