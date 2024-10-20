@@ -11,7 +11,6 @@ const Activity = () => {
         const fetchMovements = async () => {
             try {
                 const movements = await getMovements('2023-07-01', '2023-07-02');
-                console.log('Movements:', movements);
                 setTransactions(movements);
             } catch (error) {
                 console.error('Failed to fetch movements:', error);
@@ -34,7 +33,7 @@ const Activity = () => {
                     <div className={styles.row}>
                         <div className={styles.category}>
                             {transaction.category}
-                            {transaction.subcategory && ` > ${transaction.subcategory}`}
+                            {transaction.sub_category && ` > ${transaction.sub_category}`}
                         </div>
                         <div className={styles.date}>{format(new Date(transaction.date), 'dd-MM-yyyy')}</div>
                         <div className={styles.wallet}>{transaction.wallet}</div>

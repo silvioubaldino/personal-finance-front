@@ -4,7 +4,6 @@ import MenuMainButton from './MenuMainButton'
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
-import { FaWallet } from "react-icons/fa";
 import home from '../../../../../../public/home.png'
 import profile from '../../../../../../public/profile.png'
 import wallet from '../../../../../../public/wallet.png'
@@ -28,8 +27,6 @@ const ApplicationMenu = () => {
   }
 
   useEffect(() => {
-    console.log('expanded:', expanded);
-    
   }
   , [expanded])
 
