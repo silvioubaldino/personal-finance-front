@@ -1,0 +1,52 @@
+.title {
+    text-align: center;
+    color: #DA6A68;
+    padding: 10px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    color: #9F9F9F;
+    width: 600px; /* Mantém a largura do modal */
+    padding: 20px; /* Adiciona padding ao redor do modal */
+}
+
+.formGroup {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.formGroup label {
+    flex: 2;
+    margin-right: 20px; /* Aumenta o espaço entre o label e o input */
+    font-weight: bold;
+    text-align: left;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="date"],
+.formGroup select,
+.formGroup input[type="checkbox"] {
+    flex: 2;
+    padding: 8px;
+    border-radius: 4px;
+    width: 50%; /* Diminui o tamanho dos inputs */
+    color: #9F9F9F;
+}
+
+.submitButton {
+    padding: 8px 30px; /* Reduz o tamanho do botão */
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto; /* Centraliza o botão */
+}
+
+.submitButton:hover {
+    background-color: #2b632d;
+}
