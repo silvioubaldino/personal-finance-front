@@ -5,21 +5,30 @@ import Wallets from "@/app/shared/components/wallet/ui/wallet";
 import styles from './styles/dashboard.module.css'
 import Activity from "@/app/shared/components/activity/ui/activity";
 import Add from "@/app/shared/components/add/ui/add";
+import CategoryPieChart from "@/app/shared/components/graphs/ui/category-pie-chart";
+import {DataProvider} from "@/app/shared/components/context/ui/context";
 
 const DashboardPage = () => {
     return (
-        <div>
-            <FilterMonthsMode/>
-            <div className={styles.dashboradBody}>
-                <Balance/>
-                <Wallets/>
+        <DataProvider>
+            <div className={styles.pageContainer}>
+                <FilterMonthsMode/>
+                <div className={styles.balanceContainer}>
+                    <Balance/>
+                </div>
+                <div className={styles.walletAndChartContainer}>
+                    <Wallets/>
+                    <div style={{flex: 1}}>
+                        <CategoryPieChart/>
+                    </div>
+                </div>
+                <div className={styles.activityContainer}>
+                    <Activity/>
+                </div>
+                <ApplicationMenu/>
+                <Add/>
             </div>
-            <div className={styles.dashboradBody}>
-                <Activity/>
-            </div>
-            <ApplicationMenu/>
-            <Add/>
-        </div>
+        </DataProvider>
     )
 }
 
