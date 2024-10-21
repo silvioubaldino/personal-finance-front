@@ -18,7 +18,12 @@
     font-size: 1.2em;
     font-weight: bold;
     color: #9F9F9F;
-    flex: 1;
+    flex: 2;
+}
+
+.category {
+    font-size: 0.8em;
+    color: #666;
 }
 
 .date {
@@ -26,24 +31,54 @@
     color: #999;
     margin: 0 20px;
     white-space: nowrap;
+    flex: 1;
+}
+
+.amountWallet {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex: 1;
 }
 
 .amount {
     font-size: 1.1em;
     color: #4caf50;
     text-align: right;
-    flex: 1;
-}
-
-.category {
-    font-size: 0.9em;
-    color: #666;
-    flex: 1;
 }
 
 .wallet {
     font-size: 0.8em;
     color: #999;
     text-align: right;
+}
+
+.paid, .notPaid {
     flex: 1;
+    text-align: right;
+}
+
+.paid {
+    color: #78A272;
+}
+
+.notPaid {
+    color: #DA6A68;
+}
+
+.actionButton {
+    flex: 0;
+    padding-left: 10px;
+    text-align: right;
+}
+
+.actionButton button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+}
+
+.actionButton button:hover {
+    color: #9F9F9F;
 }

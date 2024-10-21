@@ -15,11 +15,12 @@ export type Wallets = {
 }
 
 export type Movement = {
-    id?: string;
+    id: string;
     description: string;
     category: string;
     sub_category?: string;
     date: string;
+    is_paid : boolean;
     amount: number;
     wallet: string;
 };
@@ -103,6 +104,7 @@ const toMovements = (response: any): Movement[] => {
         category: movement.category.description,
         sub_category: movement.sub_category?.description,
         date: movement.date,
+        is_paid: movement.is_paid,
         amount: movement.amount,
         wallet: movement.wallet.description
     }));
@@ -151,6 +153,26 @@ export const createMovement = async (movement: AddMovement) => {
         return response.data;
     } catch (error) {
         console.error('Error creating movement', error);
+        throw error;
+    }
+};
+
+export const payMovement = async (id: string) => {
+    try {
+        const response = await api.post(`/movements/${id}/pay`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error paying movement with id ${id}`, error);
+        throw error;
+    }
+};
+
+export const revertPayMovement = async (id: string) => {
+    try {
+        const response = await api.post(`/movements/${id}/pay/revert`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error reverting pay movement with id ${id}`, error);
         throw error;
     }
 };
