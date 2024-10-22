@@ -2,17 +2,23 @@
 import React, {useEffect, useState} from 'react';
 import styles from '../styles/activity.module.css';
 import {getMovements, Movement, payMovement, revertPayMovement} from "@/services/api";
-import {format} from 'date-fns';
+import {addHours, format} from 'date-fns';
 import {LuCircleSlash2, LuDollarSign} from "react-icons/lu";
+import {useData} from "@/app/shared/components/context/ui/context";
+
+const dateFrom = '2024-10-20';
+const dateTo = '2024-10-21';
 
 const Activity = () => {
     const [transactions, setTransactions] = useState<Movement[]>([]);
+    const {setData} = useData();
 
     useEffect(() => {
         const fetchMovements = async () => {
             try {
-                const movements = await getMovements('2024-10-18', '2024-10-21');
+                const movements = await getMovements(dateFrom, dateTo);
                 setTransactions(movements);
+                setData(movements);
             } catch (error) {
                 console.error('Failed to fetch movements:', error);
             }
@@ -24,7 +30,7 @@ const Activity = () => {
     const handlePay = async (id: string) => {
         try {
             await payMovement(id);
-            const movements = await getMovements('2024-10-18', '2024-10-21');
+            const movements = await getMovements(dateFrom, dateTo);
             setTransactions(movements);
         } catch (error) {
             console.error(`Failed to pay movement with id ${id}`, error);
@@ -34,7 +40,7 @@ const Activity = () => {
     const handleRevertPay = async (id: string) => {
         try {
             await revertPayMovement(id);
-            const movements = await getMovements('2024-10-18', '2024-10-21');
+            const movements = await getMovements(dateFrom, dateTo);
             setTransactions(movements);
         } catch (error) {
             console.error(`Failed to revert pay movement with id ${id}`, error);
@@ -54,7 +60,7 @@ const Activity = () => {
                             </div>
                         </div>
                         <div className={styles.date}>
-                            {format(new Date(transaction.date), 'dd-MM-yyyy')}
+                            {format(addHours(new Date(transaction.date), 12), 'dd-MM-yyyy')}
                         </div>
                         <div className={styles.amountWallet}>
                             <div className={styles.amount}>
