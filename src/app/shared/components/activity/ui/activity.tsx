@@ -4,33 +4,34 @@ import styles from '../styles/activity.module.css';
 import {getMovements, Movement, payMovement, revertPayMovement} from "@/services/api";
 import {addHours, format} from 'date-fns';
 import {LuCircleSlash2, LuDollarSign} from "react-icons/lu";
-import {useData} from "@/app/shared/components/context/ui/context";
-
-const dateFrom = '2024-10-20';
-const dateTo = '2024-10-21';
+import {useData} from "@/app/shared/components/context/ui/movements-context";
+import {useMonth} from "@/app/shared/components/context/ui/MonthContext";
 
 const Activity = () => {
     const [transactions, setTransactions] = useState<Movement[]>([]);
     const {setData} = useData();
+    const { currentMonth } = useMonth();
 
     useEffect(() => {
         const fetchMovements = async () => {
             try {
-                const movements = await getMovements(dateFrom, dateTo);
-                setTransactions(movements);
-                setData(movements);
+                if (currentMonth.from && currentMonth.to) {
+                    const movements = await getMovements(currentMonth.from, currentMonth.to);
+                    setTransactions(movements);
+                    setData(movements);
+                }
             } catch (error) {
                 console.error('Failed to fetch movements:', error);
             }
         };
 
         fetchMovements();
-    }, []);
+    }, [currentMonth]);
 
     const handlePay = async (id: string) => {
         try {
             await payMovement(id);
-            const movements = await getMovements(dateFrom, dateTo);
+            const movements = await getMovements(currentMonth.from, currentMonth.to);
             setTransactions(movements);
         } catch (error) {
             console.error(`Failed to pay movement with id ${id}`, error);
@@ -40,7 +41,7 @@ const Activity = () => {
     const handleRevertPay = async (id: string) => {
         try {
             await revertPayMovement(id);
-            const movements = await getMovements(dateFrom, dateTo);
+            const movements = await getMovements(currentMonth.from, currentMonth.to);
             setTransactions(movements);
         } catch (error) {
             console.error(`Failed to revert pay movement with id ${id}`, error);
