@@ -1,6 +1,6 @@
 'use client';
 import React, { useMemo } from 'react';
-import { useData } from "@/app/shared/components/context/ui/context";
+import { useData } from "@/app/shared/components/context/ui/movements-context";
 import styles from '../styles/total-expenses.module.css';
 
 const TotalExpenses = () => {

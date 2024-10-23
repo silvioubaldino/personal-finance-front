@@ -4,7 +4,7 @@ import * as am5 from '@amcharts/amcharts5';
 import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import styles from '../styles/category-pie-chart.module.css';
-import {useData} from "@/app/shared/components/context/ui/context";
+import {useData} from "@/app/shared/components/context/ui/movements-context";
 import TotalExpenses from "@/app/shared/components/totalexpenses/ui/total-expenses";
 
 interface DataItem {
@@ -73,6 +73,7 @@ const CategoryPieChart = () => {
             })
         );
 
+        console.log(groupedData);
         series1.data.setAll(groupedData.categories);
         series2.data.setAll(groupedData.subcategories);
 
