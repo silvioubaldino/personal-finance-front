@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from "js-cookie";
 
 const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
 
@@ -55,6 +56,21 @@ const api = axios.create({
         'Content-Type': 'application/json',
     },
 });
+
+api.interceptors.request.use(
+    (config) => {
+        const token = Cookies.get('user_token');
+        if (token) {
+            config.headers['user_token'] = `${token}`;
+        } else {
+            return Promise.reject(new Error('Token não encontrado, redirecionando para a tela de login.'));
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export const getBalance = async (from: string, to: string) => {
     try {

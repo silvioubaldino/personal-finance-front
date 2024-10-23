@@ -8,12 +8,14 @@ import Add from "@/app/shared/components/add/ui/add";
 import CategoryPieChart from "@/app/shared/components/graphs/ui/category-pie-chart";
 import {DataProvider} from "@/app/shared/components/context/ui/movements-context";
 import {MonthProvider} from "@/app/shared/components/context/ui/MonthContext";
+import LogoutButton from "@/app/shared/components/logout/ui/logout-button";
 
 const DashboardPage = () => {
     return (
         <DataProvider>
             <MonthProvider>
             <div className={styles.pageContainer}>
+                <LogoutButton/>
                 <FilterMonthsMode/>
                 <div className={styles.balanceContainer}>
                     <Balance/>

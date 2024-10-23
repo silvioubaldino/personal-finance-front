@@ -73,7 +73,6 @@ const CategoryPieChart = () => {
             })
         );
 
-        console.log(groupedData);
         series1.data.setAll(groupedData.categories);
         series2.data.setAll(groupedData.subcategories);
 
