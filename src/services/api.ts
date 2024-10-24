@@ -21,7 +21,7 @@ export type Movement = {
     category: string;
     sub_category?: string;
     date: string;
-    is_paid : boolean;
+    is_paid: boolean;
     amount: number;
     wallet: string;
 };
@@ -68,6 +68,17 @@ api.interceptors.request.use(
         return config;
     },
     (error) => {
+        return Promise.reject(error);
+    }
+);
+
+api.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response && error.response.status === 401) {
+            Cookies.remove('user_token');
+            window.location.reload();
+        }
         return Promise.reject(error);
     }
 );
