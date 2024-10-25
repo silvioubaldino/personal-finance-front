@@ -10,7 +10,7 @@ type Wallet = {
 };
 
 type SubCategory = {
-    id: number;
+    id: string;
     description: string;
 };
 
@@ -38,7 +38,7 @@ const Form = () => {
         wallet_id: 0,
         type_payment_id: 0,
         category_id: 0,
-        sub_category_id: 0
+        sub_category_id: ''
     });
 
     useEffect(() => {
@@ -94,10 +94,15 @@ const Form = () => {
                 amount: adjustedAmount,
                 date: format(dateWithNoTimezone, "yyyy-MM-dd'T'HH:mm:ssXXX"),
                 category_id: Number(formData.category_id),
-                sub_category_id: Number(formData.sub_category_id),
+                sub_category_id: formData.sub_category_id,
                 type_payment_id: Number(formData.type_payment_id),
                 wallet_id: Number(formData.wallet_id)
             };
+
+            if (!formData.sub_category_id) {
+                delete formattedData.sub_category_id;
+            }
+
             await createMovement(formattedData);
         } catch (error) {
             console.error('Error creating movement:', error);

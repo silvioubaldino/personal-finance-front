@@ -27,7 +27,7 @@ export type Movement = {
 };
 
 type SubCategory = {
-    id: number;
+    id: string;
     description: string;
 };
 
@@ -46,7 +46,7 @@ export type AddMovement = {
     wallet_id: number;
     type_payment_id: number;
     category_id: number;
-    sub_category_id: number;
+    sub_category_id?: string;
 };
 
 // TODO alterar chamadas para 'fetch' considerando usar cache do next
