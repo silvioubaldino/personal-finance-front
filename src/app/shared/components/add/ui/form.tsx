@@ -15,7 +15,7 @@ type SubCategory = {
 };
 
 type Category = {
-    id: number;
+    id: string;
     description: string;
     sub_categories: SubCategory[];
 };
@@ -29,7 +29,7 @@ const Form = () => {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [formData, setFormData] = useState<AddMovement>({
         description: '',
         amount: 0,
@@ -37,7 +37,7 @@ const Form = () => {
         is_paid: false,
         wallet_id: 0,
         type_payment_id: 0,
-        category_id: 0,
+        category_id: '',
         sub_category_id: ''
     });
 
@@ -93,7 +93,7 @@ const Form = () => {
                 ...formData,
                 amount: adjustedAmount,
                 date: format(dateWithNoTimezone, "yyyy-MM-dd'T'HH:mm:ssXXX"),
-                category_id: Number(formData.category_id),
+                category_id: formData.category_id,
                 sub_category_id: formData.sub_category_id,
                 type_payment_id: Number(formData.type_payment_id),
                 wallet_id: Number(formData.wallet_id)
@@ -143,7 +143,7 @@ const Form = () => {
                     <label htmlFor="category_id">Categoria</label>
                     <select id="category_id" name="category_id" onChange={(e) => {
                         handleChange(e);
-                        setSelectedCategory(Number(e.target.value));
+                        setSelectedCategory(e.target.value);
                     }}>
                         <option key="" value="">Selecione uma categoria</option>
                         {categories.map(category => (

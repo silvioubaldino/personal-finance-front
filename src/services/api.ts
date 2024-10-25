@@ -32,7 +32,7 @@ type SubCategory = {
 };
 
 type Category = {
-    id: number;
+    id: string;
     description: string;
     user_id: string;
     sub_categories: SubCategory[];
@@ -45,7 +45,7 @@ export type AddMovement = {
     is_paid: boolean;
     wallet_id: number;
     type_payment_id: number;
-    category_id: number;
+    category_id: string;
     sub_category_id?: string;
 };
 
