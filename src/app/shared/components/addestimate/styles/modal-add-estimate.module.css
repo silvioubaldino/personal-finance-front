@@ -1,0 +1,60 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalContent {
+    background: #1E1E1E;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    color: #9F9F9F;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.formGroup select,
+.formGroup input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #9F9F9F;
+    border-radius: 4px;
+    background: #2A2A2A;
+    color: #9F9F9F;
+}
+
+.formActions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.formActions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.formActions button[type="submit"] {
+    background-color: #9F9F9F;
+    color: #1E1E1E;
+}
+
+.formActions button[type="button"] {
+    background-color: transparent;
+    color: #9F9F9F;
+}

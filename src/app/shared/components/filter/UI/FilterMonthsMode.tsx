@@ -3,6 +3,14 @@ import React, { useEffect } from 'react';
 import { monsthsPortuguese } from '../service/constants';
 import styles from '../styles/FilterMonthsMode.module.css';
 import { useMonth } from '@/app/shared/components/context/ui/MonthContext';
+import { parse } from 'date-fns';
+
+export const extractMonthAndYear = (dateString: string): { month: number, year: number } => {
+  const date = parse(dateString, 'yyyy-MM-dd', new Date());
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  return { month, year };
+};
 
 const FilterMonthsMode = () => {
   const { currentMonth, setCurrentMonth } = useMonth();

@@ -203,3 +203,18 @@ export const revertPayMovement = async (id: string) => {
         throw error;
     }
 };
+
+export const getEstimate = async (month: number, year: number) => {
+    try {
+        const response = await api.get('/estimate', {
+            params: {
+                month,
+                year
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch estimate:', error);
+        throw error;
+    }
+};

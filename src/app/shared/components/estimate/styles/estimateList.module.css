@@ -1,0 +1,75 @@
+.container {
+    padding: 20px;
+    background-color: #1E1E1E;
+    border-radius: 8px;
+}
+
+.header, .row {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr 1fr auto;
+    align-items: center;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.header {
+    border-bottom: 2px solid #9F9F9F;
+}
+
+.estimate {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.estimateExpanded {
+    background-color: #2A2A2A;
+}
+
+.categoryName, .amount, .realized, .result {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #9F9F9F;
+    text-align: left;
+}
+
+.subCategories {
+    width: 100%;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.button, .buttonEdit {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #9F9F9F;
+    margin: 0;
+    padding: 5px;
+    font-size: 1.2em;
+}
+
+.addNewRow {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    border-top: 2px solid #9F9F9F;
+}
+
+.addButton {
+    background-color: #9F9F9F;
+    color: #1E1E1E;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px 20px;
+    font-size: 1.2em;
+}
+
+.buttonDisabled {
+    color: #555;
+    cursor: not-allowed;
+}
