@@ -1,8 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/services/authentication/firebase';
+import GoogleLoginButton from './ui/GoogleLoginButton';
 import styles from './styles/login.module.css';
 import Cookies from 'js-cookie';
 
@@ -18,12 +19,27 @@ const LoginPage = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCredential.user.getIdToken();
 
-      Cookies.set('user_token', token, {expires: 1});
+      Cookies.set('user_token', token, { expires: 1 });
 
       router.push('/dashboard');
     } catch (error) {
       console.log(error);
       setError('Falha no login. Verifique suas credenciais.');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const token = await result.user.getIdToken();
+
+      Cookies.set('user_token', token, { expires: 1 });
+
+      router.push('/dashboard');
+    } catch (error) {
+      console.log(error);
+      setError('Falha no login com Google.');
     }
   };
 
@@ -43,6 +59,9 @@ const LoginPage = () => {
           {error && <p className={styles.error}>{error}</p>}
           <button type="submit" className={styles.loginButton}>Login</button>
         </form>
+        <div className={styles.googleButton}>
+          <GoogleLoginButton onClick={handleGoogleLogin} />
+        </div>
       </div>
     </div>
   );
