@@ -73,3 +73,11 @@
     color: #555;
     cursor: not-allowed;
 }
+
+.amountEdit {
+    flex: 2;
+    padding: 8px;
+    border-radius: 4px;
+    width: 50%;
+    color: #9F9F9F;
+}
