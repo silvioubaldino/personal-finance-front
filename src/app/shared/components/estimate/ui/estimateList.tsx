@@ -1,13 +1,14 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/estimateList.module.css';
 import { LuArrowDown, LuArrowUp, LuPenSquare } from "react-icons/lu";
-import ModalForm from '@/app/shared/components/addestimate/ui/modal-add-estimate';
+import AddEstimateForm from '@/app/shared/components/addestimate/ui/add-estimate-form';
 import { useData } from "@/app/shared/components/context/ui/movements-context";
 import { useMonth } from "@/app/shared/components/context/ui/MonthContext";
 import { getEstimate, getMovements } from '@/services/api';
 import { extractMonthAndYear } from "@/app/shared/components/filter/UI/FilterMonthsMode";
+import Modal from "@/app/shared/components/add/ui/modal";
+import AddSubEstimateForm from "@/app/shared/components/addestimate/ui/add-sub-estimate-form";
 
 interface SubCategory {
     id: string;
@@ -28,6 +29,7 @@ const createCategoryMap = (movements: any[]): { [key: string]: number } => {
         return acc;
     }, {} as { [key: string]: number });
 };
+
 const createSubCategoryMap = (movements: any[]): { [key: string]: number } => {
     return movements.reduce((acc, movement) => {
         const subCategory = movement.sub_category;
@@ -52,6 +54,9 @@ const EstimateList = () => {
     const [subCategoriesRealized, setSubCategoriesRealized] = useState<{ [key: string]: number }>({});
     const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalContent, setModalContent] = useState<'estimate' | 'subEstimate'>('estimate');
+    const [selectedEstimateCategoryId, setSelectedEstimateCategoryId] = useState<string>('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
 
     useEffect(() => {
         const fetchMovementsAndEstimates = async () => {
@@ -87,6 +92,14 @@ const EstimateList = () => {
     };
 
     const handleAddNew = () => {
+        setModalContent('estimate');
+        setIsModalOpen(true);
+    };
+
+    const handleAddSubEstimate = (estimateCategoryId: string, category: string) => {
+        setSelectedEstimateCategoryId(estimateCategoryId);
+        setSelectedCategory(category);
+        setModalContent('subEstimate');
         setIsModalOpen(true);
     };
 
@@ -107,15 +120,13 @@ const EstimateList = () => {
                 const realizedAmount = realized[estimate.category_name] || 0;
                 const result = estimate.amount - realizedAmount;
                 const isExpanded = expanded[estimate.id];
-                const hasSubCategories = !!estimate.estimates_sub_categories;
 
                 return (
                     <div key={estimate.id} className={`${styles.estimate} ${isExpanded ? styles.estimateExpanded : ''}`}>
                         <div className={styles.row}>
                             <button
-                                className={`${styles.button} ${!hasSubCategories ? styles.buttonDisabled : ''}`}
-                                onClick={() => hasSubCategories && toggleExpand(estimate.id)}
-                                disabled={!hasSubCategories}
+                                className={styles.button}
+                                onClick={() => toggleExpand(estimate.id)}
                             >
                                 {isExpanded ? <LuArrowUp /> : <LuArrowDown />}
                             </button>
@@ -127,26 +138,33 @@ const EstimateList = () => {
                                 <LuPenSquare />
                             </button>
                         </div>
-                        {isExpanded && hasSubCategories && (
-                            <div className={styles.subCategories}>
-                                {estimate.estimates_sub_categories.map((sub: SubCategory) => {
-                                    const subRealizedAmount = subCategoriesRealized[sub.sub_category_name] || 0;
-                                    const subResult = sub.amount - subRealizedAmount;
+                        {isExpanded && (
+                            <>
+                                <div className={styles.subCategories}>
+                                    {estimate.estimates_sub_categories && estimate.estimates_sub_categories.map((sub: SubCategory) => {
+                                        const subRealizedAmount = subCategoriesRealized[sub.sub_category_name] || 0;
+                                        const subResult = sub.amount - subRealizedAmount;
 
-                                    return (
-                                        <div key={sub.id} className={styles.row}>
-                                            <div></div>
-                                            <div className={styles.categoryName}>{sub.sub_category_name}</div>
-                                            <div className={styles.amount}>{sub.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                            <div className={styles.realized}>{subRealizedAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                            <div className={styles.result}>{subResult.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                            <button className={styles.buttonEdit} onClick={() => handleEdit(sub.id)}>
-                                                <LuPenSquare />
-                                            </button>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                                        return (
+                                            <div key={sub.id} className={styles.row}>
+                                                <div></div>
+                                                <div className={styles.categoryName}>{sub.sub_category_name}</div>
+                                                <div className={styles.amount}>{sub.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                                                <div className={styles.realized}>{subRealizedAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                                                <div className={styles.result}>{subResult.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                                                <button className={styles.buttonEdit} onClick={() => handleEdit(sub.id)}>
+                                                    <LuPenSquare />
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <div className={styles.addSubCategoryRow}>
+                                    <button className={styles.addButton} onClick={() => handleAddSubEstimate(estimate.id, estimate.category_name)}>
+                                        Adicionar Subcategoria
+                                    </button>
+                                </div>
+                            </>
                         )}
                     </div>
                 );
@@ -156,7 +174,17 @@ const EstimateList = () => {
                     Adicionar novo planejamento
                 </button>
             </div>
-            <ModalForm isOpen={isModalOpen} onClose={handleCloseModal} />
+            <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+                {modalContent === 'estimate' ? (
+                    <AddEstimateForm currentMonth={currentMonth} onClose={handleCloseModal} />
+                ) : (
+                    <AddSubEstimateForm
+                        currentMonth={currentMonth}
+                        estimateCategoryId={selectedEstimateCategoryId}
+                        onClose={handleCloseModal}
+                        selectedCategory={selectedCategory} />
+                )}
+            </Modal>
         </div>
     );
 };
