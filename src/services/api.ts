@@ -255,3 +255,23 @@ export const createSubEstimate = async (subEstimate: SubEstimate) => {
         throw error;
     }
 };
+
+export const updateEstimate = async (id: string, amount: number) => {
+    try {
+        const response = await api.put(`/estimate/${id}`, { amount });
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating estimate with id ${id}`, error);
+        throw error;
+    }
+};
+
+export const updateSubEstimate = async (id: string, amount: number) => {
+    try {
+        const response = await api.put(`/sub-estimate/${id}`, { amount });
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating estimate with id ${id}`, error);
+        throw error;
+    }
+};
