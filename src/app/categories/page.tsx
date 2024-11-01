@@ -6,13 +6,13 @@ import SubCategoryList from "@/app/categories/components/subcategory-list";
 import styles from './styles/categories.module.css';
 
 type Category = {
-    id: number;
+    id: string;
     description: string;
     sub_categories: SubCategory[];
 };
 
 type SubCategory = {
-    id: number;
+    id: string;
     description: string;
 };
 
@@ -33,7 +33,7 @@ const CategoriesPage = () => {
         fetchCategories();
     }, []);
 
-    const handleSelectCategory = (categoryId: number) => {
+    const handleSelectCategory = (categoryId: string) => {
         const selectedCategory = categories.find(category => category.id === categoryId);
         if (selectedCategory) {
             setSelectedSubCategories(selectedCategory.sub_categories);

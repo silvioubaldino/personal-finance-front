@@ -1,7 +1,7 @@
 import React from 'react';
 
 type SubCategory = {
-    id: number;
+    id: string;
     description: string;
 };
 

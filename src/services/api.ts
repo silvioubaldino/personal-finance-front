@@ -218,3 +218,40 @@ export const getEstimate = async (month: number, year: number) => {
         throw error;
     }
 };
+
+export type Estimate = {
+    category_id: string;
+    category_name: string;
+    month: number;
+    year: number;
+    amount: number;
+};
+
+export const createEstimate = async (estimate: Estimate) => {
+    try {
+        const response = await api.post('/estimate', estimate);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating estimate', error);
+        throw error;
+    }
+};
+
+export type SubEstimate = {
+    sub_category_id: string;
+    category_name: string;
+    estimate_category_id: string;
+    month: number;
+    year: number;
+    amount: number;
+};
+
+export const createSubEstimate = async (subEstimate: SubEstimate) => {
+    try {
+        const response = await api.post('/sub-estimate', subEstimate);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating sub-estimate', error);
+        throw error;
+    }
+};

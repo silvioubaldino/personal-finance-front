@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import styles from '../styles/categories.module.css';
 
 type Category = {
-    id: number;
+    id: string;
     description: string;
 };
 
 type CategoryListProps = {
     categories: Category[];
-    onSelectCategory: (categoryId: number) => void;
+    onSelectCategory: (categoryId: string) => void;
 };
 
 const CategoryList: React.FC<CategoryListProps> = ({ categories, onSelectCategory }) => {
-    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
-    const handleCategoryClick = (categoryId: number) => {
+    const handleCategoryClick = (categoryId: string) => {
         setSelectedCategoryId(categoryId);
         onSelectCategory(categoryId);
     };
