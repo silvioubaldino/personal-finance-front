@@ -121,13 +121,14 @@ const EstimateList = () => {
         if (estimate) {
             let amountValue = editableAmount[id];
 
-            if (estimate.is_income && amountValue < 0) {
+            if (estimate.is_category_income && amountValue < 0) {
                 amountValue = -amountValue;
             }
 
-            if (!estimate.is_income && amountValue > 0) {
+            if (!estimate.is_category_income && amountValue > 0) {
                 amountValue = -amountValue;
             }
+
             await updateEstimate(id, amountValue);
             setIsEditing(prev => ({ ...prev, [id]: false }));
         }
@@ -138,15 +139,17 @@ const EstimateList = () => {
 
 const handleSubSave = async (id: string) => {
     try {
-        const subEstimate = estimates.flatMap(est => est.estimates_sub_categories).find(sub => sub.id === id);
-        if (subEstimate) {
+        const parentEstimate = estimates.find(est => est?.estimates_sub_categories?.some((sub: SubCategory) => sub && sub.id === id));
+        const subEstimate = parentEstimate?.estimates_sub_categories.find((sub: SubCategory) => sub && sub.id === id);
+
+        if (subEstimate && parentEstimate) {
             let amountValue = editableSubAmount[id];
 
-            if (subEstimate.is_income && amountValue < 0) {
+            if (parentEstimate.is_category_income && amountValue < 0) {
                 amountValue = -amountValue;
             }
 
-            if (!subEstimate.is_income && amountValue > 0) {
+            if (!parentEstimate.is_category_income && amountValue > 0) {
                 amountValue = -amountValue;
             }
 
