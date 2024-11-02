@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { createSubEstimate, getCategories } from '@/services/api';
-import { extractMonthAndYear } from '@/app/shared/components/filter/UI/FilterMonthsMode';
+import React, {useEffect, useState} from 'react';
+import {createSubEstimate, Estimate, getCategories} from '@/services/api';
+import {extractMonthAndYear} from '@/app/shared/components/filter/UI/FilterMonthsMode';
 import styles from '../styles/modal-add-estimate.module.css';
 
 interface Category {
@@ -16,12 +16,11 @@ interface SubCategory {
 
 interface AddSubEstimateFormProps {
     currentMonth: { from: string; to: string };
-    estimateCategoryId: string;
-    selectedCategory: string;
+    estimateCategory: Estimate;
     onClose: () => void;
 }
 
-const AddSubEstimateForm: React.FC<AddSubEstimateFormProps> = ({ currentMonth, estimateCategoryId, selectedCategory, onClose }) => {
+const AddSubEstimateForm: React.FC<AddSubEstimateFormProps> = ({currentMonth, estimateCategory, onClose}) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedSubCategory, setSelectedSubCategory] = useState<string>('');
@@ -41,28 +40,38 @@ const AddSubEstimateForm: React.FC<AddSubEstimateFormProps> = ({ currentMonth, e
     }, []);
 
     useEffect(() => {
-        if (selectedCategory) {
-            const category = categories.find(cat => cat.description === selectedCategory);
+        if (estimateCategory.category_name) {
+            const category = categories.find(cat => cat.description === estimateCategory.category_name);
             if (category) {
                 setSubCategories(category.sub_categories);
             }
         } else {
             setSubCategories([]);
         }
-    }, [selectedCategory, categories]);
+    }, [estimateCategory.category_name, categories]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const selectedSubCategoryObj = subCategories.find(sub => sub.id === selectedSubCategory);
         if (selectedSubCategoryObj) {
-            const { month, year } = extractMonthAndYear(currentMonth.from);
+            const {month, year} = extractMonthAndYear(currentMonth.from);
+            let amountValue = parseFloat(amount);
+
+            if (!estimateCategory.is_category_income && amountValue > 0) {
+                amountValue = -amountValue;
+            }
+
+            if (estimateCategory.is_category_income && amountValue < 0) {
+                amountValue = -amountValue;
+            }
+
             const subEstimate = {
                 sub_category_id: selectedSubCategoryObj.id,
                 category_name: selectedSubCategoryObj.description,
-                estimate_category_id: estimateCategoryId,
+                estimate_category_id: estimateCategory.category_id,
                 month,
                 year,
-                amount: parseFloat(amount),
+                amount: amountValue,
             };
             try {
                 await createSubEstimate(subEstimate);
@@ -79,10 +88,10 @@ const AddSubEstimateForm: React.FC<AddSubEstimateFormProps> = ({ currentMonth, e
                 <label htmlFor="category">Categoria</label>
                 <select
                     id="category"
-                    value={selectedCategory}
+                    value={estimateCategory.category_name}
                     disabled
                 >
-                    <option value="">{selectedCategory}</option>
+                    <option value="">{estimateCategory.category_name}</option>
                 </select>
             </div>
             <div className={styles.formGroup}>
