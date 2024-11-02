@@ -222,6 +222,7 @@ export const getEstimate = async (month: number, year: number) => {
 };
 
 export type Estimate = {
+    id: string;
     category_id: string;
     category_name: string;
     is_category_income: boolean;
