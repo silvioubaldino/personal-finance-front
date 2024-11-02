@@ -6,6 +6,7 @@ import styles from '../styles/modal-add-estimate.module.css';
 interface Category {
     id: string;
     description: string;
+    is_income: boolean;
 }
 
 interface AddEstimateFormProps {
@@ -32,25 +33,37 @@ const AddEstimateForm: React.FC<AddEstimateFormProps> = ({ currentMonth, onClose
     }, []);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const selectedCategoryObj = categories.find(cat => cat.id === selectedCategory);
-        if (selectedCategoryObj) {
-            const { month, year } = extractMonthAndYear(currentMonth.from);
-            const estimate = {
-                category_id: selectedCategoryObj.id,
-                category_name: selectedCategoryObj.description,
-                month,
-                year,
-                amount: parseFloat(amount),
-            };
-            try {
-                await createEstimate(estimate);
-                onClose();
-            } catch (error) {
-                console.error('Error creating estimate:', error);
-            }
+    e.preventDefault();
+    const selectedCategoryObj = categories.find(cat => cat.id === selectedCategory);
+    if (selectedCategoryObj) {
+        const { month, year } = extractMonthAndYear(currentMonth.from);
+        let amountValue = parseFloat(amount);
+
+        if (!selectedCategoryObj.is_income && amountValue > 0) {
+            amountValue = -amountValue;
         }
-    };
+
+        if (selectedCategoryObj.is_income && amountValue < 0) {
+            amountValue = -amountValue;
+        }
+
+        const estimate = {
+            category_id: selectedCategoryObj.id,
+            category_name: selectedCategoryObj.description,
+            is_category_income: selectedCategoryObj.is_income,
+            month,
+            year,
+            amount: amountValue,
+        };
+
+        try {
+            await createEstimate(estimate);
+            onClose();
+        } catch (error) {
+            console.error('Error creating estimate:', error);
+        }
+    }
+};
 
     return (
         <form onSubmit={handleSubmit} className={styles.wideForm}>
@@ -70,7 +83,7 @@ const AddEstimateForm: React.FC<AddEstimateFormProps> = ({ currentMonth, onClose
                 </select>
             </div>
             <div className={styles.formGroup}>
-                <label htmlFor="amount">Valor Monetário</label>
+                <label htmlFor="amount">Valor</label>
                 <input
                     type="number"
                     id="amount"

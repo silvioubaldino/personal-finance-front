@@ -5,7 +5,7 @@ import {LuArrowDown, LuArrowUp, LuPenSquare, LuSend} from "react-icons/lu";
 import AddEstimateForm from '@/app/shared/components/addestimate/ui/add-estimate-form';
 import {useData} from "@/app/shared/components/context/ui/movements-context";
 import {useMonth} from "@/app/shared/components/context/ui/MonthContext";
-import {getEstimate, getMovements, updateEstimate, updateSubEstimate} from '@/services/api';
+import {Estimate, getEstimate, getMovements, updateEstimate, updateSubEstimate} from '@/services/api';
 import {extractMonthAndYear} from "@/app/shared/components/filter/UI/FilterMonthsMode";
 import Modal from "@/app/shared/components/add/ui/modal";
 import AddSubEstimateForm from "@/app/shared/components/addestimate/ui/add-sub-estimate-form";
@@ -55,8 +55,7 @@ const EstimateList = () => {
     const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState<'estimate' | 'subEstimate'>('estimate');
-    const [selectedEstimateCategoryId, setSelectedEstimateCategoryId] = useState<string>('');
-    const [selectedCategory, setSelectedCategory] = useState<string>('');
+    const [selectedEstimateCategory, setSelectedEstimateCategory] = useState<Estimate>();
     const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({});
     const [editableAmount, setEditableAmount] = useState<{ [key: string]: number }>({});
     const [isEditingSub, setIsEditingSub] = useState<{ [key: string]: boolean }>({});
@@ -96,9 +95,8 @@ const EstimateList = () => {
         setIsModalOpen(true);
     };
 
-    const handleAddSubEstimate = (estimateCategoryId: string, category: string) => {
-        setSelectedEstimateCategoryId(estimateCategoryId);
-        setSelectedCategory(category);
+    const handleAddSubEstimate = (estimate: Estimate) => {
+        setSelectedEstimateCategory(estimate);
         setModalContent('subEstimate');
         setIsModalOpen(true);
     };
@@ -117,25 +115,48 @@ const EstimateList = () => {
         setEditableSubAmount(prev => ({...prev, [id]: amount}));
     };
 
-    const handleSave = async (id: string) => {
-        try {
-            await updateEstimate(id, editableAmount[id]);
-            setIsEditing(prev => ({...prev, [id]: false}));
-            // Atualize os dados conforme necessário
-        } catch (error) {
-            console.error('Failed to update estimate:', error);
-        }
-    };
+   const handleSave = async (id: string) => {
+    try {
+        const estimate = estimates.find(est => est.id === id);
+        if (estimate) {
+            let amountValue = editableAmount[id];
 
-    const handleSubSave = async (id: string) => {
-        try {
-            await updateSubEstimate(id, editableSubAmount[id]);
-            console.log("edit subcategory");
-            setIsEditingSub(prev => ({...prev, [id]: false}));
-        } catch (error) {
-            console.error('Failed to update sub-estimate:', error);
+            if (estimate.is_income && amountValue < 0) {
+                amountValue = -amountValue;
+            }
+
+            if (!estimate.is_income && amountValue > 0) {
+                amountValue = -amountValue;
+            }
+            await updateEstimate(id, amountValue);
+            setIsEditing(prev => ({ ...prev, [id]: false }));
         }
-    };
+    } catch (error) {
+        console.error('Failed to update estimate:', error);
+    }
+};
+
+const handleSubSave = async (id: string) => {
+    try {
+        const subEstimate = estimates.flatMap(est => est.estimates_sub_categories).find(sub => sub.id === id);
+        if (subEstimate) {
+            let amountValue = editableSubAmount[id];
+
+            if (subEstimate.is_income && amountValue < 0) {
+                amountValue = -amountValue;
+            }
+
+            if (!subEstimate.is_income && amountValue > 0) {
+                amountValue = -amountValue;
+            }
+
+            await updateSubEstimate(id, amountValue);
+            setIsEditingSub(prev => ({ ...prev, [id]: false }));
+        }
+    } catch (error) {
+        console.error('Failed to update sub-estimate:', error);
+    }
+};
 
     return (
         <div className={styles.container}>
@@ -148,7 +169,7 @@ const EstimateList = () => {
             </div>
             {estimates.map((estimate) => {
                 const realizedAmount = realized[estimate.category_name] || 0;
-                const result = estimate.amount - realizedAmount;
+                const result = (estimate.amount - realizedAmount) * -1;
                 const isExpanded = expanded[estimate.id];
                 const isEditingCategory = isEditing[estimate.id];
 
@@ -202,7 +223,7 @@ const EstimateList = () => {
                                 <div className={styles.subCategories}>
                                     {estimate.estimates_sub_categories && estimate.estimates_sub_categories.map((sub: SubCategory) => {
                                         const subRealizedAmount = subCategoriesRealized[sub.sub_category_name] || 0;
-                                        const subResult = sub.amount - subRealizedAmount;
+                                        const subResult = (sub.amount - subRealizedAmount) * -1;
                                         const isEditingSubCategory = isEditingSub[sub.id];
 
                                         return (
@@ -255,7 +276,7 @@ const EstimateList = () => {
                                 </div>
                                 <div className={styles.addSubCategoryRow}>
                                     <button className={styles.addButton}
-                                            onClick={() => handleAddSubEstimate(estimate.id, estimate.category_name)}>
+                                            onClick={() => handleAddSubEstimate(estimate)}>
                                         Adicionar Subcategoria
                                     </button>
                                 </div>
@@ -273,11 +294,12 @@ const EstimateList = () => {
                 {modalContent === 'estimate' ? (
                     <AddEstimateForm currentMonth={currentMonth} onClose={handleCloseModal}/>
                 ) : (
-                    <AddSubEstimateForm
+                    selectedEstimateCategory && (
+                        <AddSubEstimateForm
                         currentMonth={currentMonth}
-                        estimateCategoryId={selectedEstimateCategoryId}
-                        onClose={handleCloseModal}
-                        selectedCategory={selectedCategory}/>
+                        estimateCategory={selectedEstimateCategory}
+                        onClose={handleCloseModal}/>
+                    )
                 )}
             </Modal>
         </div>

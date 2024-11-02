@@ -34,6 +34,7 @@ type SubCategory = {
 type Category = {
     id: string;
     description: string;
+    is_income: boolean;
     user_id: string;
     sub_categories: SubCategory[];
 };
@@ -157,6 +158,7 @@ const toCategories = (response: any): Category[] => {
         id: category.id,
         description: category.description,
         user_id: category.user_id,
+        is_income: category.is_income,
         sub_categories: category.sub_categories? category.sub_categories.map((sub: any) => ({
             id: sub.id,
             description: sub.description
@@ -222,6 +224,7 @@ export const getEstimate = async (month: number, year: number) => {
 export type Estimate = {
     category_id: string;
     category_name: string;
+    is_category_income: boolean;
     month: number;
     year: number;
     amount: number;
