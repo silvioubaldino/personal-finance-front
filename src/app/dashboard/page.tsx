@@ -17,7 +17,7 @@ const DashboardPage = () => {
                 <Balance/>
             </div>
             <div className={styles.walletAndChartContainer}>
-                <Wallets/>
+                <Wallets isEditing={false}/>
                 <div style={{flex: 1}}>
                     <CategoryPieChart/>
                 </div>
