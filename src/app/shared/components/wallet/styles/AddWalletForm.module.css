@@ -1,14 +1,8 @@
-.title {
-    text-align: center;
-    color: #DA6A68;
-    padding: 10px;
-}
-
 .form {
     display: flex;
     flex-direction: column;
     color: #9F9F9F;
-    width: 600px;
+    width: 400px;
     padding: 20px;
 }
 
@@ -27,8 +21,7 @@
 
 .formGroup input[type="text"],
 .formGroup input[type="date"],
-.formGroup select,
-.formGroup input[type="checkbox"] {
+.formGroup input[type="number"] {
     flex: 2;
     padding: 8px;
     border-radius: 4px;
@@ -37,14 +30,14 @@
 }
 
 .submitButton {
-    padding: 8px 30px;
-    background-color: #4caf50;
-    color: #fff;
+    background-color: #9F9F9F;
+    color: #1E1E1E;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    display: block;
-    margin: 0 auto;
+    padding: 8px 20px;
+    margin: 0 auto; /* Centraliza o botão */
+    font-size: 1.2em;
 }
 
 .submitButton:hover {

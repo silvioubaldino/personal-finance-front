@@ -13,6 +13,8 @@ export type Wallets = {
     id: number
     description: string;
     balance: number;
+    initial_balance: number;
+    initial_date: string;
 }
 
 export type Movement = {
@@ -111,7 +113,9 @@ const toWallets = (response: any): Wallets[] => {
     return response.map((wallet: any) => ({
         id: wallet.id,
         description: wallet.description,
-        balance: wallet.balance
+        balance: wallet.balance,
+        initial_balance: wallet.initial_balance,
+        initial_date: wallet.initial_date
     }));
 }
 
@@ -124,6 +128,34 @@ export const getWallets = async () => {
         throw error;
     }
 }
+
+export const addWallet = async (description: string, initial_balance: number, initial_date: string) => {
+    try {
+        const response = await api.post('/wallets', {
+            description,
+            initial_balance,
+            initial_date
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating wallet', error);
+        throw error;
+    }
+}
+
+export const updateWallet = async (id: number, initial_balance: number, initial_date: string, description: string) => {
+    try {
+        const response = await api.put(`/wallets/${id}`, {
+            description,
+            initial_balance,
+            initial_date
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating wallet with id ${id}`, error);
+        throw error;
+    }
+};
 
 const toMovements = (response: any): Movement[] => {
     return response.map((movement: any) => ({
@@ -222,7 +254,7 @@ export const getEstimate = async (month: number, year: number) => {
 };
 
 export type Estimate = {
-    id: string;
+    id?: string;
     category_id: string;
     category_name: string;
     is_category_income: boolean;
