@@ -33,7 +33,7 @@ type SubCategory = {
     description: string;
 };
 
-type Category = {
+export type Category = {
     id: string;
     description: string;
     is_income: boolean;

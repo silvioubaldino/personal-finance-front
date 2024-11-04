@@ -8,7 +8,7 @@ interface AddButtonProps {
 
 const AddButton = ({ onClick }: AddButtonProps) => {
     return (
-        <button className={styles.button} onClick={onClick}>
+        <button className={styles.buttonAdd} onClick={onClick}>
             {<LuPlus size={20} color="#C9AD72"/>}
         </button>
     );

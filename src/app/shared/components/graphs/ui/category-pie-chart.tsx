@@ -79,7 +79,6 @@ const CategoryPieChart = () => {
         series1.slices.template.set("tooltipText", "{category}: R$ {value.formatNumber('#,###.##')}"); /*({value.percent.formatNumber('#.0')}%)*/
         series2.slices.template.set("tooltipText", "{sub_category}: R$ {value.formatNumber('#,###.##')}"); /*({value.percent.formatNumber('#.0')}%)*/
 
-        // Link the two series
         series1.slices.template.on("active", function (active, target) {
             if (active && target && target.dataItem) {
                 const category = (target.dataItem.dataContext as DataItem).category;

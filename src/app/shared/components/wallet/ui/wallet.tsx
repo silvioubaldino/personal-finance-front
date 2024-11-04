@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import styles from '../styles/wallet.module.css';
-import {addWallet, getWallets, updateWallet, Wallets} from "@/services/api"; // Importe a função addWallet
+import {addWallet, getWallets, updateWallet, Wallets} from "@/services/api";
 import {LuPenSquare, LuSend} from "react-icons/lu";
 import {addHours, format, parseISO} from "date-fns";
 import Modal from '../../add/ui/modal';
@@ -42,7 +42,7 @@ const handleEdit = (id: number, initial_balance: number, initial_date: string, d
         setEditableInitialBalance(prev => ({ ...prev, [id]: initial_balance }));
         const parsedDate = parseISO(initial_date);
         const year = parsedDate.getUTCFullYear();
-        const month = parsedDate.getUTCMonth() + 1; // getUTCMonth() returns month from 0-11
+        const month = parsedDate.getUTCMonth() + 1;
         const day = parsedDate.getUTCDate();
         const dateWithNoTimezone = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
         const date = format(dateWithNoTimezone, "yyyy-MM-dd")
