@@ -1,61 +1,34 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/form.module.css';
-import {AddMovement, createMovement, getCategories, getWallets,} from "@/services/api";
-import {format} from "date-fns";
-
-type Wallet = {
-    id: number;
-    description: string;
-    balance: number;
-};
+import { AddMovement, createMovement } from "@/services/api";
+import { format } from "date-fns";
+import { useData } from "@/app/shared/components/context/ui/common-data-context";
 
 type SubCategory = {
     id: string;
     description: string;
 };
 
-type Category = {
-    id: string;
-    description: string;
-    sub_categories: SubCategory[];
-};
-
 const mockTypePayment = [
-    {id: 1, description: 'Crédito'},
-    {id: 2, description: 'Débito'}
+    { id: 1, description: 'Crédito' },
+    { id: 2, description: 'Débito' }
 ];
 
-const Form = () => {
-    const [wallets, setWallets] = useState<Wallet[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
+const IncomeForm = () => {
+    const { wallets, categories } = useData();
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const today = new Date().toISOString().split('T')[0];
     const [formData, setFormData] = useState<AddMovement>({
         description: '',
         amount: 0,
-        date: '',
+        date: today,
         is_paid: false,
         wallet_id: 0,
         type_payment_id: 0,
         category_id: '',
         sub_category_id: ''
     });
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const walletsData = await getWallets();
-                setWallets(walletsData);
-
-                const categoriesData = await getCategories();
-                setCategories(categoriesData);
-            } catch (error) {
-                console.error('Error fetching data', error);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     useEffect(() => {
         if (selectedCategory !== null) {
@@ -71,18 +44,18 @@ const Form = () => {
     }, [selectedCategory, categories]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const {name, value, type} = e.target;
+        const { name, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
         setFormData(prevState => ({
             ...prevState,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : name === 'amount' ? Number(value) : value
         }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let adjustedAmount = formData.amount;
-        if (adjustedAmount >= 0) {
+        if (adjustedAmount <= 0) {
             adjustedAmount = -adjustedAmount;
         }
         try {
@@ -111,28 +84,26 @@ const Form = () => {
 
     return (
         <div>
-            <h2 className={styles.title}>Despesa</h2>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
-                    <label htmlFor="description">Descrição</label>
-                    <input type="text" id="description" name="description" onChange={handleChange}/>
+                    <label htmlFor="description">Rendimento</label>
+                    <input type="text" id="description" name="description" value={formData.description} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="amount">Valor</label>
-                    <input type="text" id="amount" name="amount" onChange={handleChange}/>
+                    <input type="text" id="amount" name="amount" value={formData.amount} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="date">Data</label>
-                    <input type="date" id="date" name="date" onChange={handleChange}/>
+                    <input type="date" id="date" name="date" value={formData.date} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="is_paid">Pago</label>
-                    <input type="checkbox" id="is_paid" name="is_paid" onChange={handleChange}/>
+                    <input type="checkbox" id="is_paid" name="is_paid" checked={formData.is_paid} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="wallet_id">Carteira</label>
-                    <select id="wallet_id" name="wallet_id" onChange={handleChange}>
-                        {/*form.tsx:82 Warning: Each child in a list should have a unique "key" prop.*/}
+                    <select id="wallet_id" name="wallet_id" value={formData.wallet_id} onChange={handleChange}>
                         <option key="" value="">Selecione uma Carteira</option>
                         {wallets.map(wallet => (
                             <option key={wallet.id} value={wallet.id}>{wallet.description}</option>
@@ -141,19 +112,19 @@ const Form = () => {
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="category_id">Categoria</label>
-                    <select id="category_id" name="category_id" onChange={(e) => {
+                    <select id="category_id" name="category_id" value={formData.category_id} onChange={(e) => {
                         handleChange(e);
                         setSelectedCategory(e.target.value);
                     }}>
                         <option key="" value="">Selecione uma categoria</option>
-                        {categories.map(category => (
+                        {categories.filter(category => category.is_income).map(category => (
                             <option key={category.id} value={category.id}>{category.description}</option>
                         ))}
                     </select>
                 </div>
                 <div className={styles.formGroup}>
-                    <label htmlFor="subcategory_id">Subcategoria</label>
-                    <select id="sub_category_id" name="sub_category_id" onChange={handleChange}>
+                    <label htmlFor="sub_category_id">Subcategoria</label>
+                    <select id="sub_category_id" name="sub_category_id" value={formData.sub_category_id} onChange={handleChange}>
                         <option key="" value="">Selecione uma subcategoria</option>
                         {subCategories.map(subcategory => (
                             <option key={subcategory.id} value={subcategory.id}>{subcategory.description}</option>
@@ -162,17 +133,17 @@ const Form = () => {
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="type_payment_id">Forma de Pagamento</label>
-                    <select id="type_payment_id" name="type_payment_id" onChange={handleChange}>
+                    <select id="type_payment_id" name="type_payment_id" value={formData.type_payment_id} onChange={handleChange}>
                         <option key="" value="">Selecione</option>
                         {mockTypePayment.map(type => (
                             <option key={type.id} value={type.id}>{type.description}</option>
                         ))}
                     </select>
                 </div>
-                <button type="submit" className={styles.submitButton}>Submit</button>
+                <button type="submit" className={styles.submitButton}>Adicionar</button>
             </form>
         </div>
     );
 };
 
-export default Form;
+export default IncomeForm;

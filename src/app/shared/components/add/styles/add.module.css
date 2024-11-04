@@ -1,18 +1,43 @@
-.button {
+.buttonAdd {
     position: absolute;
-    right: 16%; /* Ajuste conforme necessário */
-    bottom: 20px; /* Ajuste conforme necessário */
-    background-color: transparent; /* Ajuste conforme necessário */
-    border: none; /* Ajuste conforme necessário */
-    border-radius: 100%; /* Ajuste conforme necessário */
+    right: 16%;
+    bottom: 20px;
+    background-color: transparent;
+    border: none;
+    border-radius: 100%;
     cursor: pointer;
-    padding: 10px; /* Ajuste conforme necessário */
+    padding: 10px;
 }
 
-.button:hover {
+.buttonAdd:hover {
     background-color: #262626;
     border-radius: 100%;
     width: fit-content;
     height: fit-content;
     cursor: pointer;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    background-color: #666;
+    color: #000;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.button:hover {
+    background-color: #d0d0d0;
+}
+
+.active {
+    background-color: #d0d0d0;
+    color: #000;
 }
