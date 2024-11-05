@@ -9,6 +9,7 @@ import TotalExpenses from "@/app/shared/components/totalexpenses/ui/total-expens
 
 interface DataItem {
     category: string;
+    category_amount: string;
     sub_category: string;
     amount: number;
 }
@@ -18,27 +19,36 @@ const CategoryPieChart = () => {
     const {data} = useData();
 
     const groupedData = useMemo(() => {
-        const categories = data.reduce<{ category: string; value: number }[]>((acc, item: DataItem) => {
-            const category = acc.find((c) => c.category === item.category) || {category: item.category, value: 0};
+        const categories = data.filter((cat) => cat.amount < 0).reduce<{
+            category: string;
+            value: number;
+        }[]>((acc, item: DataItem) => {
+            const category = acc.find((c) => c.category === item.category) || {
+                category: item.category,
+                value: 0
+            };
             category.value += item.amount;
             if (!acc.includes(category)) acc.push(category);
             return acc;
-        }, []);
+        }, []).sort((a, b) => b.value - a.value);
 
-        const subcategories = data.reduce<{
+        const subcategories = data.filter((cat) => cat.amount < 0).reduce<{
             category: string;
+            category_amount: number;
             sub_category: string;
-            value: number
+            value: number;
         }[]>((acc, item: DataItem) => {
+            const category = categories.find((c) => c.category === item.category);
             const subcategory = acc.find((c) => c.category === item.category && c.sub_category === item.sub_category) || {
                 category: item.category,
-                sub_category: item.sub_category,
-                value: 0
+                category_amount: category ? category.value : 0,
+                sub_category: item.sub_category || item.category,
+                value: 0,
             };
             subcategory.value += item.amount;
             if (!acc.includes(subcategory)) acc.push(subcategory);
             return acc;
-        }, []);
+        }, []).sort((a, b) => b.category_amount - a.category_amount);
 
         return {categories, subcategories};
     }, [data]);
@@ -76,25 +86,8 @@ const CategoryPieChart = () => {
         series1.data.setAll(groupedData.categories);
         series2.data.setAll(groupedData.subcategories);
 
-        series1.slices.template.set("tooltipText", "{category}: R$ {value.formatNumber('#,###.##')}"); /*({value.percent.formatNumber('#.0')}%)*/
-        series2.slices.template.set("tooltipText", "{sub_category}: R$ {value.formatNumber('#,###.##')}"); /*({value.percent.formatNumber('#.0')}%)*/
-
-        series1.slices.template.on("active", function (active, target) {
-            if (active && target && target.dataItem) {
-                const category = (target.dataItem.dataContext as DataItem).category;
-                series2.dataItems.forEach(function (dataItem) {
-                    if ((dataItem.dataContext as DataItem).category === category) {
-                        dataItem.show();
-                    } else {
-                        dataItem.hide();
-                    }
-                });
-            } else {
-                series2.dataItems.forEach(function (dataItem) {
-                    dataItem.show();
-                });
-            }
-        });
+        series1.slices.template.set("tooltipText", "{category}: R$ {value.formatNumber('#,###.##')}({valuePercentTotal.formatNumber('0.00')}%[/])");
+        series2.slices.template.set("tooltipText", "{sub_category}: R$ {value.formatNumber('#,###.##')}({valuePercentTotal.formatNumber('0.00')}%[/])");
 
         series1.labels.template.set("visible", false);
         series1.ticks.template.set("visible", false);
