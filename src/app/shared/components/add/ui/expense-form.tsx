@@ -117,7 +117,7 @@ const IncomeForm = () => {
                         setSelectedCategory(e.target.value);
                     }}>
                         <option key="" value="">Selecione uma categoria</option>
-                        {categories.filter(category => category.is_income).map(category => (
+                        {categories.filter(category => !category.is_income).map(category => (
                             <option key={category.id} value={category.id}>{category.description}</option>
                         ))}
                     </select>

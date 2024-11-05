@@ -53,7 +53,7 @@ const AddSubEstimateForm: React.FC<AddSubEstimateFormProps> = ({currentMonth, es
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const selectedSubCategoryObj = subCategories.find(sub => sub.id === selectedSubCategory);
-        if (selectedSubCategoryObj) {
+        if (selectedSubCategoryObj && estimateCategory.id) {
             const {month, year} = extractMonthAndYear(currentMonth.from);
             let amountValue = parseFloat(amount);
 
@@ -65,7 +65,6 @@ const AddSubEstimateForm: React.FC<AddSubEstimateFormProps> = ({currentMonth, es
                 amountValue = -amountValue;
             }
 
-            console.log(estimateCategory)
             const subEstimate = {
                 sub_category_id: selectedSubCategoryObj.id,
                 category_name: selectedSubCategoryObj.description,

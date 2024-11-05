@@ -54,11 +54,9 @@ const IncomeForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let adjustedAmount = Number(formData.amount);
-        console.log(typeof formData.amount)
         if (adjustedAmount <= 0) {
             adjustedAmount = -adjustedAmount;
         }
-        console.log(typeof adjustedAmount)
         try {
             const [year, month, day] = formData.date.split('-').map(Number);
             const dateWithNoTimezone = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
