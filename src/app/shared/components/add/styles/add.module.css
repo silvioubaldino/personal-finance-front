@@ -1,20 +1,33 @@
 .buttonAdd {
-    position: absolute;
-    right: 16%;
-    bottom: 20px;
-    background-color: transparent;
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+    background-color: #1E1E1E;
     border: none;
-    border-radius: 100%;
+    border-radius: 50%;
     cursor: pointer;
     padding: 10px;
+    z-index: 1000;
 }
 
 .buttonAdd:hover {
     background-color: #262626;
-    border-radius: 100%;
     width: fit-content;
     height: fit-content;
-    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .buttonAdd {
+        right: 10%;
+        bottom: 10%;
+    }
+}
+
+@media (max-width: 480px) {
+    .buttonAdd {
+        right: 15%;
+        bottom: 15%;
+    }
 }
 
 .buttonGroup {
