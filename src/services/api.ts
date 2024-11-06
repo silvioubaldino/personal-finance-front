@@ -46,7 +46,7 @@ export type AddMovement = {
     amount: number;
     date: string;
     is_paid: boolean;
-    wallet_id: number;
+    wallet_id: string;
     type_payment_id: number;
     category_id: string;
     sub_category_id?: string;
