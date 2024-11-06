@@ -14,7 +14,7 @@ const mockTypePayment = [
     { id: 4, description: 'Débito' }
 ];
 
-const IncomeForm = () => {
+const ExpenseForm = () => {
     const { wallets, categories } = useData();
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -55,7 +55,7 @@ const IncomeForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         let adjustedAmount = formData.amount;
-        if (adjustedAmount <= 0) {
+        if (adjustedAmount >= 0) {
             adjustedAmount = -adjustedAmount;
         }
         try {
@@ -146,4 +146,4 @@ const IncomeForm = () => {
     );
 };
 
-export default IncomeForm;
+export default ExpenseForm;
