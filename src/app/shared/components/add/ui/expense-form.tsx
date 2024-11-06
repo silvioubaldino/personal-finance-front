@@ -24,7 +24,7 @@ const IncomeForm = () => {
         amount: 0,
         date: today,
         is_paid: false,
-        wallet_id: 0,
+        wallet_id: '',
         type_payment_id: 0,
         category_id: '',
         sub_category_id: ''
@@ -69,7 +69,7 @@ const IncomeForm = () => {
                 category_id: formData.category_id,
                 sub_category_id: formData.sub_category_id,
                 type_payment_id: Number(formData.type_payment_id),
-                wallet_id: Number(formData.wallet_id)
+                wallet_id: formData.wallet_id
             };
 
             if (!formData.sub_category_id) {
