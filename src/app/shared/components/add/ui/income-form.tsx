@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/form.module.css';
-import {AddMovement, createMovement,} from "@/services/api";
-import {format} from "date-fns";
-import {useData} from "@/app/shared/components/context/ui/common-data-context";
+import { AddMovement, createMovement } from "@/services/api";
+import { format } from "date-fns";
+import { useData } from "@/app/shared/components/context/ui/common-data-context";
 
 type SubCategory = {
     id: string;
@@ -10,20 +10,21 @@ type SubCategory = {
 };
 
 const mockTypePayment = [
-    {id: 1, description: 'Crédito'},
-    {id: 2, description: 'Débito'}
+    { id: 1, description: 'Crédito' },
+    { id: 2, description: 'Débito' }
 ];
 
 const IncomeForm = () => {
     const { wallets, categories } = useData();
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const today = new Date().toISOString().split('T')[0];
     const [formData, setFormData] = useState<AddMovement>({
         description: '',
         amount: 0,
-        date: '',
+        date: today,
         is_paid: false,
-        wallet_id: 0,
+        wallet_id: '',
         type_payment_id: 0,
         category_id: '',
         sub_category_id: ''
@@ -43,7 +44,7 @@ const IncomeForm = () => {
     }, [selectedCategory, categories]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const {name, value, type} = e.target;
+        const { name, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
         setFormData(prevState => ({
             ...prevState,
@@ -68,7 +69,7 @@ const IncomeForm = () => {
                 category_id: formData.category_id,
                 sub_category_id: formData.sub_category_id,
                 type_payment_id: Number(formData.type_payment_id),
-                wallet_id: Number(formData.wallet_id)
+                wallet_id: formData.wallet_id
             };
 
             if (!formData.sub_category_id) {
@@ -86,24 +87,23 @@ const IncomeForm = () => {
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                     <label htmlFor="description">Rendimento</label>
-                    <input type="text" id="description" name="description" onChange={handleChange}/>
+                    <input type="text" id="description" name="description" value={formData.description} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="amount">Valor</label>
-                    <input type="text" id="amount" name="amount" onChange={handleChange}/>
+                    <input type="text" id="amount" name="amount" value={formData.amount} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="date">Data</label>
-                    <input type="date" id="date" name="date" onChange={handleChange}/>
+                    <input type="date" id="date" name="date" value={formData.date} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="is_paid">Pago</label>
-                    <input type="checkbox" id="is_paid" name="is_paid" onChange={handleChange}/>
+                    <input type="checkbox" id="is_paid" name="is_paid" checked={formData.is_paid} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="wallet_id">Carteira</label>
-                    <select id="wallet_id" name="wallet_id" onChange={handleChange}>
-                        {/*form.tsx:82 Warning: Each child in a list should have a unique "key" prop.*/}
+                    <select id="wallet_id" name="wallet_id" value={formData.wallet_id} onChange={handleChange}>
                         <option key="" value="">Selecione uma Carteira</option>
                         {wallets.map(wallet => (
                             <option key={wallet.id} value={wallet.id}>{wallet.description}</option>
@@ -112,7 +112,7 @@ const IncomeForm = () => {
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="category_id">Categoria</label>
-                    <select id="category_id" name="category_id" onChange={(e) => {
+                    <select id="category_id" name="category_id" value={formData.category_id} onChange={(e) => {
                         handleChange(e);
                         setSelectedCategory(e.target.value);
                     }}>
@@ -123,8 +123,8 @@ const IncomeForm = () => {
                     </select>
                 </div>
                 <div className={styles.formGroup}>
-                    <label htmlFor="subcategory_id">Subcategoria</label>
-                    <select id="sub_category_id" name="sub_category_id" onChange={handleChange}>
+                    <label htmlFor="sub_category_id">Subcategoria</label>
+                    <select id="sub_category_id" name="sub_category_id" value={formData.sub_category_id} onChange={handleChange}>
                         <option key="" value="">Selecione uma subcategoria</option>
                         {subCategories.map(subcategory => (
                             <option key={subcategory.id} value={subcategory.id}>{subcategory.description}</option>
@@ -133,7 +133,7 @@ const IncomeForm = () => {
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="type_payment_id">Forma de Pagamento</label>
-                    <select id="type_payment_id" name="type_payment_id" onChange={handleChange}>
+                    <select id="type_payment_id" name="type_payment_id" value={formData.type_payment_id} onChange={handleChange}>
                         <option key="" value="">Selecione</option>
                         {mockTypePayment.map(type => (
                             <option key={type.id} value={type.id}>{type.description}</option>
