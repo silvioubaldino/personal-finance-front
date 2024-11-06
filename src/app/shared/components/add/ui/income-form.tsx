@@ -10,8 +10,8 @@ type SubCategory = {
 };
 
 const mockTypePayment = [
-    { id: 1, description: 'Crédito' },
-    { id: 2, description: 'Débito' }
+    { id: 3, description: 'Pix' },
+    { id: 4, description: 'Débito' }
 ];
 
 const IncomeForm = () => {
