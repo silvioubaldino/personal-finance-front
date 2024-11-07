@@ -35,13 +35,14 @@
   padding: 0.75rem;
   border: 1px solid #9F9F9F;
   border-radius: 4px;
+  background-color: #000;
 }
 
 .loginButton {
   width: 100%;
   padding: 0.75rem;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #f2f2f2;
+  color: #1E1E1E;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -49,7 +50,7 @@
 }
 
 .loginButton:hover {
-  background-color: #0056b3;
+  background-color: #9F9F9F;
 }
 
 .googleButton {
