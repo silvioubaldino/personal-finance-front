@@ -9,8 +9,8 @@ type Balance = {
     period_balance: number;
 }
 
-export type Wallets = {
-    id: number
+export type Wallet = {
+    id: string
     description: string;
     balance: number;
     initial_balance: number;
@@ -20,12 +20,13 @@ export type Wallets = {
 export type Movement = {
     id: string;
     description: string;
-    category: string;
-    sub_category?: string;
+    amount: number;
     date: string;
     is_paid: boolean;
-    amount: number;
-    wallet: string;
+    wallet: Wallet;
+    type_payment_id: number;
+    category: Category
+    sub_category?: SubCategory
 };
 
 type SubCategory = {
@@ -42,6 +43,7 @@ export type Category = {
 };
 
 export type AddMovement = {
+    id?: string;
     description: string;
     amount: number;
     date: string;
@@ -109,14 +111,18 @@ const toBalance = (response: any): Balance => {
     }
 }
 
-const toWallets = (response: any): Wallets[] => {
-    return response.map((wallet: any) => ({
+const toWallets = (response: any): Wallet[] => {
+    return response.map((wallet: any) => (toWallet(wallet)));
+}
+
+const toWallet = (wallet: any): Wallet => {
+    return {
         id: wallet.id,
         description: wallet.description,
         balance: wallet.balance,
         initial_balance: wallet.initial_balance,
         initial_date: wallet.initial_date
-    }));
+    };
 }
 
 export const getWallets = async () => {
@@ -143,7 +149,7 @@ export const addWallet = async (description: string, initial_balance: number, in
     }
 }
 
-export const updateWallet = async (id: number, initial_balance: number, initial_date: string, description: string) => {
+export const updateWallet = async (id: string, initial_balance: number, initial_date: string, description: string) => {
     try {
         const response = await api.put(`/wallets/${id}`, {
             description,
@@ -158,16 +164,20 @@ export const updateWallet = async (id: number, initial_balance: number, initial_
 };
 
 const toMovements = (response: any): Movement[] => {
-    return response.map((movement: any) => ({
-        id: movement.id,
-        description: movement.description,
-        category: movement.category.description,
-        sub_category: movement.sub_category?.description,
-        date: movement.date,
-        is_paid: movement.is_paid,
-        amount: movement.amount,
-        wallet: movement.wallet.description
-    }));
+    return response.map((movement: any): Movement => {
+        const sub = toSubCategory(movement.sub_category);
+        return {
+            id: movement.id,
+            description: movement.description,
+            amount: movement.amount,
+            date: movement.date,
+            is_paid: movement.is_paid,
+            wallet: toWallet(movement.wallet),
+            type_payment_id: movement.type_payment_id,
+            category: toCategory(movement.category),
+            sub_category: sub
+        };
+    });
 }
 
 export const getMovements = async (from: string, to: string): Promise<Movement[]> => {
@@ -186,17 +196,36 @@ export const getMovements = async (from: string, to: string): Promise<Movement[]
 }
 
 const toCategories = (response: any): Category[] => {
-    return response.map((category: any) => ({
+    return response.map((category: any) => (toCategory(category)))
+}
+
+const toCategory = (category: any): Category => {
+    const sub = category.sub_categories ? category.sub_categories.map((sub: any) => ({
+        id: sub.id,
+        description: sub.description
+    })) : [];
+
+    return {
         id: category.id,
         description: category.description,
         user_id: category.user_id,
         is_income: category.is_income,
-        sub_categories: category.sub_categories? category.sub_categories.map((sub: any) => ({
-            id: sub.id,
-            description: sub.description
-        })) : []
-    }));
-};
+        sub_categories: sub
+    };
+}
+
+const toSubCategory = (subCategory: any): SubCategory => {
+    if (!subCategory) {
+        return {
+            id: '',
+            description: ''
+        };
+    }
+    return {
+        id: subCategory.id,
+        description: subCategory.description
+    };
+}
 
 export const getCategories = async (): Promise<Category[]> => {
     try {
@@ -214,6 +243,16 @@ export const createMovement = async (movement: AddMovement) => {
         return response.data;
     } catch (error) {
         console.error('Error creating movement', error);
+        throw error;
+    }
+};
+
+export const updateMovement = async (id: string, movement: AddMovement) => {
+    try {
+        const response = await api.put(`/movements/${id}`, movement);
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating movement with id ${id}`, error);
         throw error;
     }
 };
@@ -274,15 +313,25 @@ export const createEstimate = async (estimate: Estimate) => {
 };
 
 export type SubEstimate = {
+    id: string;
     sub_category_id: string;
-    category_name: string;
+    sub_category_name: string;
     estimate_category_id: string;
     month: number;
     year: number;
     amount: number;
 };
 
-export const createSubEstimate = async (subEstimate: SubEstimate) => {
+export type AddSubEstimateDTO = {
+    sub_category_id: string;
+    sub_category_name: string;
+    estimate_category_id: string;
+    month: number;
+    year: number;
+    amount: number;
+};
+
+export const createSubEstimate = async (subEstimate: AddSubEstimateDTO) => {
     try {
         const response = await api.post('/sub-estimate', subEstimate);
         return response.data;
@@ -294,7 +343,7 @@ export const createSubEstimate = async (subEstimate: SubEstimate) => {
 
 export const updateEstimate = async (id: string, amount: number) => {
     try {
-        const response = await api.put(`/estimate/${id}`, { amount });
+        const response = await api.put(`/estimate/${id}`, {amount});
         return response.data;
     } catch (error) {
         console.error(`Error updating estimate with id ${id}`, error);
@@ -304,7 +353,7 @@ export const updateEstimate = async (id: string, amount: number) => {
 
 export const updateSubEstimate = async (id: string, amount: number) => {
     try {
-        const response = await api.put(`/sub-estimate/${id}`, { amount });
+        const response = await api.put(`/sub-estimate/${id}`, {amount});
         return response.data;
     } catch (error) {
         console.error(`Error updating estimate with id ${id}`, error);

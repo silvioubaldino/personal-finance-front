@@ -67,7 +67,7 @@ const AddSubEstimateForm: React.FC<AddSubEstimateFormProps> = ({currentMonth, es
 
             const subEstimate = {
                 sub_category_id: selectedSubCategoryObj.id,
-                category_name: selectedSubCategoryObj.description,
+                sub_category_name: selectedSubCategoryObj.description,
                 estimate_category_id: estimateCategory.id,
                 month,
                 year,

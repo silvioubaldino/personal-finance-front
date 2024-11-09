@@ -54,3 +54,9 @@
     background-color: #d0d0d0;
     color: #000;
 }
+
+.buttonDisabled {
+    color: #555;
+    cursor: not-allowed;
+    pointer-events: none;
+}

@@ -3,14 +3,17 @@ import React, {useEffect, useState} from 'react';
 import styles from '../styles/activity.module.css';
 import {getMovements, Movement, payMovement, revertPayMovement} from "@/services/api";
 import {addHours, format} from 'date-fns';
-import {LuCircleSlash2, LuDollarSign} from "react-icons/lu";
+import {LuCircleSlash2, LuDollarSign, LuPenSquare} from "react-icons/lu";
 import {useData} from "@/app/shared/components/context/ui/movements-context";
 import {useMonth} from "@/app/shared/components/context/ui/MonthContext";
+import ClientOnlyModal from "@/app/shared/components/add/ui/add";
 
 const Activity = () => {
     const [transactions, setTransactions] = useState<Movement[]>([]);
     const {setData} = useData();
-    const { currentMonth } = useMonth();
+    const {currentMonth} = useMonth();
+    const [editingMovement, setEditingMovement] = useState<Movement>();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchMovements = async () => {
@@ -48,6 +51,11 @@ const Activity = () => {
         }
     };
 
+    const handleEdit = (movement: Movement) => {
+        setEditingMovement(movement);
+        setIsModalOpen(true);
+    };
+
     return (
         <div className={styles.container}>
             {transactions.map((transaction, index) => (
@@ -56,8 +64,8 @@ const Activity = () => {
                         <div className={styles.description}>
                             {transaction.description}
                             <div className={styles.category}>
-                                {transaction.category}
-                                {transaction.sub_category && ` > ${transaction.sub_category}`}
+                                {transaction.category.description}
+                                {transaction.sub_category && transaction.sub_category.id &&` > ${transaction.sub_category.description}`}
                             </div>
                         </div>
                         <div className={styles.date}>
@@ -71,7 +79,7 @@ const Activity = () => {
                                 })}
                             </div>
                             <div className={styles.wallet}>
-                                {transaction.wallet}
+                                {transaction.wallet.description}
                             </div>
                         </div>
                         <div className={transaction.is_paid ? styles.paid : styles.notPaid}>
@@ -87,10 +95,18 @@ const Activity = () => {
                                     <LuDollarSign size={20}/>
                                 </button>
                             )}
+                            <button title="Editar" onClick={() => handleEdit(transaction)}>
+                                <LuPenSquare size={20}/>
+                            </button>
                         </div>
                     </div>
                 </div>
             ))}
+            <ClientOnlyModal
+                isEditing={!!editingMovement}
+                movement={editingMovement}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}/>
         </div>
     );
 };

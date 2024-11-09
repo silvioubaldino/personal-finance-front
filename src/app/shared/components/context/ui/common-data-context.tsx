@@ -1,9 +1,9 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Category, Wallets, getWallets, getCategories } from "@/services/api";
+import { Category, Wallet, getWallets, getCategories } from "@/services/api";
 
 interface CommonDataContextType {
-    wallets: Wallets[];
+    wallets: Wallet[];
     categories: Category[];
 }
 
@@ -14,7 +14,7 @@ interface DataProviderProps {
 const DataContext = createContext<CommonDataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-    const [wallets, setWallets] = useState<Wallets[]>([]);
+    const [wallets, setWallets] = useState<Wallet[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {

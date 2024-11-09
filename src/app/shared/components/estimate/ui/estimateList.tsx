@@ -5,7 +5,7 @@ import {LuArrowDown, LuArrowUp, LuPenSquare, LuSend} from "react-icons/lu";
 import AddEstimateForm from '@/app/shared/components/addestimate/ui/add-estimate-form';
 import {useData} from "@/app/shared/components/context/ui/movements-context";
 import {useMonth} from "@/app/shared/components/context/ui/MonthContext";
-import {Estimate, getEstimate, getMovements, updateEstimate, updateSubEstimate} from '@/services/api';
+import {Estimate, getEstimate, getMovements, SubEstimate, updateEstimate, updateSubEstimate} from '@/services/api';
 import {extractMonthAndYear} from "@/app/shared/components/filter/UI/FilterMonthsMode";
 import Modal from "@/app/shared/components/add/ui/modal";
 import AddSubEstimateForm from "@/app/shared/components/addestimate/ui/add-sub-estimate-form";
@@ -18,29 +18,29 @@ interface SubCategory {
 
 const createCategoryMap = (movements: any[]): { [key: string]: number } => {
     return movements.reduce((acc, movement) => {
-        const category = movement.category;
+        const categoryID = movement.category.id;
         const amount = movement.amount;
 
-        if (!acc[category]) {
-            acc[category] = 0;
+        if (!acc[categoryID]) {
+            acc[categoryID] = 0;
         }
 
-        acc[category] += amount;
+        acc[categoryID] += amount;
         return acc;
     }, {} as { [key: string]: number });
 };
 
 const createSubCategoryMap = (movements: any[]): { [key: string]: number } => {
     return movements.reduce((acc, movement) => {
-        const subCategory = movement.sub_category;
+        const subCategoryID = movement.sub_category.id;
         const amount = movement.amount;
 
-        if (subCategory) {
-            if (!acc[subCategory]) {
-                acc[subCategory] = 0;
+        if (subCategoryID) {
+            if (!acc[subCategoryID]) {
+                acc[subCategoryID] = 0;
             }
 
-            acc[subCategory] += amount;
+            acc[subCategoryID] += amount;
         }
         return acc;
     }, {} as { [key: string]: number });
@@ -171,7 +171,7 @@ const handleSubSave = async (id: string) => {
                 <div className={styles.result}>Resultado</div>
             </div>
             {estimates.map((estimate) => {
-                const realizedAmount = realized[estimate.category_name] || 0;
+                const realizedAmount = realized[estimate.category_id] || 0;
                 const result = (estimate.amount - realizedAmount) * -1;
                 const isExpanded = expanded[estimate.id];
                 const isEditingCategory = isEditing[estimate.id];
@@ -224,8 +224,8 @@ const handleSubSave = async (id: string) => {
                         {isExpanded && (
                             <>
                                 <div className={styles.subCategories}>
-                                    {estimate.estimates_sub_categories && estimate.estimates_sub_categories.map((sub: SubCategory) => {
-                                        const subRealizedAmount = subCategoriesRealized[sub.sub_category_name] || 0;
+                                    {estimate.estimates_sub_categories && estimate.estimates_sub_categories.map((sub: SubEstimate) => {
+                                        const subRealizedAmount = subCategoriesRealized[sub.sub_category_id] || 0;
                                         const subResult = (sub.amount - subRealizedAmount) * -1;
                                         const isEditingSubCategory = isEditingSub[sub.id];
 

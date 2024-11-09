@@ -6,11 +6,14 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import styles from '../styles/category-pie-chart.module.css';
 import {useData} from "@/app/shared/components/context/ui/movements-context";
 import TotalExpenses from "@/app/shared/components/totalexpenses/ui/total-expenses";
+import {Category} from "@/services/api";
 
 interface DataItem {
-    category: string;
+    category: Category;
     category_amount: string;
-    sub_category: string;
+    sub_category?: {
+        description: string;
+    };
     amount: number;
 }
 
@@ -23,8 +26,8 @@ const CategoryPieChart = () => {
             category: string;
             value: number;
         }[]>((acc, item: DataItem) => {
-            const category = acc.find((c) => c.category === item.category) || {
-                category: item.category,
+            const category = acc.find((c) => c.category === item.category.description) || {
+                category: item.category.description,
                 value: 0
             };
             category.value += item.amount;
@@ -38,11 +41,11 @@ const CategoryPieChart = () => {
             sub_category: string;
             value: number;
         }[]>((acc, item: DataItem) => {
-            const category = categories.find((c) => c.category === item.category);
-            const subcategory = acc.find((c) => c.category === item.category && c.sub_category === item.sub_category) || {
-                category: item.category,
+            const category = categories.find((c) => c.category === item.category.description);
+            const subcategory = acc.find((c) => c.category === item.category.description && c.sub_category === item.sub_category?.description) || {
+                category: item.category.description,
                 category_amount: category ? category.value : 0,
-                sub_category: item.sub_category || item.category,
+                sub_category: item.sub_category?.description || item.category.description,
                 value: 0,
             };
             subcategory.value += item.amount;
