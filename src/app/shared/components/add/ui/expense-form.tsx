@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/form.module.css';
-import { AddMovement, createMovement } from "@/services/api";
+import {AddMovement, createMovement, Movement, updateMovement} from "@/services/api";
 import { format } from "date-fns";
 import { useData } from "@/app/shared/components/context/ui/common-data-context";
 
@@ -14,7 +14,12 @@ const mockTypePayment = [
     { id: 4, description: 'Débito' }
 ];
 
-const ExpenseForm = () => {
+type ExpenseFormProps = {
+    isEditing: boolean;
+    movement?: Movement;
+};
+
+const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement }) => {
     const { wallets, categories } = useData();
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -25,10 +30,29 @@ const ExpenseForm = () => {
         date: today,
         is_paid: false,
         wallet_id: '',
-        type_payment_id: 0,
+        type_payment_id: 4,
         category_id: '',
         sub_category_id: ''
     });
+
+    useEffect(() => {
+        if (movement) {
+            setFormData(
+                {
+                    description: movement.description,
+                    amount: movement.amount,
+                    date: movement.date.split('T')[0],
+                    is_paid: movement.is_paid,
+                    wallet_id: movement.wallet.id,
+                    type_payment_id: movement.type_payment_id,
+                    category_id: movement.category.id,
+                    sub_category_id: movement.sub_category?.id || ''
+                }
+            );
+            console.log(movement);
+            setSelectedCategory(movement.category.id);
+        }
+    }, [movement]);
 
     useEffect(() => {
         if (selectedCategory !== null) {
@@ -76,9 +100,13 @@ const ExpenseForm = () => {
                 delete formattedData.sub_category_id;
             }
 
-            await createMovement(formattedData);
+            if (isEditing && movement && movement) {
+                await updateMovement(movement.id, formattedData);
+            } else {
+                await createMovement(formattedData);
+            }
         } catch (error) {
-            console.error('Error creating movement:', error);
+            console.error('Error creating or updating movement:', error);
         }
     };
 
@@ -86,7 +114,7 @@ const ExpenseForm = () => {
         <div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
-                    <label htmlFor="description">Rendimento</label>
+                    <label htmlFor="description">Gasto</label>
                     <input type="text" id="description" name="description" value={formData.description} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
@@ -140,7 +168,7 @@ const ExpenseForm = () => {
                         ))}
                     </select>
                 </div>
-                <button type="submit" className={styles.submitButton}>Adicionar</button>
+                <button type="submit" className={styles.submitButton}>{isEditing ? 'Atualizar' : 'Adicionar'}</button>
             </form>
         </div>
     );

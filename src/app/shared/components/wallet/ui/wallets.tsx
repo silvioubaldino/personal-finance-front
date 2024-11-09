@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import styles from '../styles/wallet.module.css';
-import {addWallet, getWallets, updateWallet, Wallets} from "@/services/api";
+import {addWallet, getWallets, updateWallet, Wallet} from "@/services/api";
 import {LuPenSquare, LuSend} from "react-icons/lu";
 import {addHours, format, parseISO} from "date-fns";
 import Modal from '../../add/ui/modal';
@@ -12,14 +12,14 @@ interface WalletProps {
     isEditing: boolean;
 }
 
-const Wallet: React.FC<WalletProps> = ({isEditing}) => {
-    const [wallets, setWallets] = useState<Wallets[]>([]);
+const Wallets: React.FC<WalletProps> = ({isEditing}) => {
+    const [wallets, setWallets] = useState<Wallet[]>([]);
     const [total, setTotal] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isEditingWallet, setIsEditingWallet] = useState<{ [key: number]: boolean }>({});
-    const [editableInitialBalance, setEditableInitialBalance] = useState<{ [key: number]: number }>({});
-    const [editableDate, setEditableDate] = useState<{ [key: number]: string }>({});
-    const [editableDescription, setEditableDescription] = useState<{ [key: number]: string }>({});
+    const [isEditingWallet, setIsEditingWallet] = useState<{ [key: string]: boolean }>({});
+    const [editableInitialBalance, setEditableInitialBalance] = useState<{ [key: string]: number }>({});
+    const [editableDate, setEditableDate] = useState<{ [key: string]: string }>({});
+    const [editableDescription, setEditableDescription] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         const fetchWallets = async () => {
@@ -36,7 +36,7 @@ const Wallet: React.FC<WalletProps> = ({isEditing}) => {
         fetchWallets();
     }, []);
 
-const handleEdit = (id: number, initial_balance: number, initial_date: string, description: string) => {
+const handleEdit = (id: string, initial_balance: number, initial_date: string, description: string) => {
     setIsEditingWallet(prev => ({ ...prev, [id]: !prev[id] }));
     if (!isEditingWallet[id]) {
         setEditableInitialBalance(prev => ({ ...prev, [id]: initial_balance }));
@@ -52,7 +52,7 @@ const handleEdit = (id: number, initial_balance: number, initial_date: string, d
     }
 };
 
-    const handleSave = async (id: number) => {
+    const handleSave = async (id: string) => {
         try {
             const initial_balance = editableInitialBalance[id];
             const initial_date = editableDate[id];
@@ -179,4 +179,4 @@ const handleEdit = (id: number, initial_balance: number, initial_date: string, d
     );
 };
 
-export default Wallet;
+export default Wallets;
