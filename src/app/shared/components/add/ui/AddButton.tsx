@@ -1,16 +1,19 @@
-import React from 'react';
+'use client';
+import React, {useState} from 'react';
 import styles from '../styles/add.module.css';
 import {LuPlus} from 'react-icons/lu';
+import ClientOnlyModal from "@/app/shared/components/add/ui/add";
 
-interface AddButtonProps {
-    onClick: () => void;
-}
+const AddButton = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-const AddButton = ({ onClick }: AddButtonProps) => {
     return (
-        <button className={styles.buttonAdd} onClick={onClick}>
-            {<LuPlus size={30} color="#C9AD72"/>}
-        </button>
+        <>
+            <button className={styles.buttonAdd} onClick={() => setIsModalOpen(true)}>
+                {<LuPlus size={30} color="#C9AD72"/>}
+            </button>
+            <ClientOnlyModal isEditing={false} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+        </>
     );
 };
 

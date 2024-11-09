@@ -1,12 +1,12 @@
 import styles from "@/app/wallets/styles/wallets.module.css";
-import Wallet from "@/app/shared/components/wallet/ui/wallet";
+import Wallets from "@/app/shared/components/wallet/ui/wallets";
 
 const WalletsPage = () => {
     return (
         <div className={styles.pageContainer}>
             <h1>Carteiras</h1>
             <div className={styles.wallet}>
-                <Wallet isEditing={true}/>
+                <Wallets isEditing={true}/>
             </div>
         </div>
     )
