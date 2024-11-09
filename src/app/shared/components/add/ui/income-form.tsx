@@ -49,7 +49,6 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ isEditing, movement }) => {
                     sub_category_id: movement.sub_category?.id || ''
                 }
             );
-            console.log(movement);
             setSelectedCategory(movement.category.id);
         }
     }, [movement]);
@@ -72,7 +71,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ isEditing, movement }) => {
         const checked = (e.target as HTMLInputElement).checked;
         setFormData(prevState => ({
             ...prevState,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : name === 'amount' ? parseFloat(value) : value
         }));
     };
 
@@ -120,7 +119,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ isEditing, movement }) => {
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="amount">Valor</label>
-                    <input type="text" id="amount" name="amount" value={formData.amount} onChange={handleChange}/>
+                    <input type="number" step="0.01" id="amount" name="amount" value={formData.amount} onChange={handleChange}/>
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="date">Data</label>
