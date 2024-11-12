@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from '../styles/form.module.css';
 import {AddMovement, createMovement, Movement, updateMovement} from "@/services/api";
-import { format } from "date-fns";
-import { useData } from "@/app/shared/components/context/ui/common-data-context";
+import {format} from "date-fns";
+import {useData} from "@/app/shared/components/context/ui/common-data-context";
 
 type SubCategory = {
     id: string;
@@ -10,17 +10,18 @@ type SubCategory = {
 };
 
 const mockTypePayment = [
-    { id: 3, description: 'Pix' },
-    { id: 4, description: 'Débito' }
+    {id: 3, description: 'Pix'},
+    {id: 4, description: 'Débito'}
 ];
 
 type IncomeFormProps = {
     isEditing: boolean;
     movement?: Movement;
+    onUpdateTransactions: () => void;
 };
 
-const IncomeForm: React.FC<IncomeFormProps> = ({ isEditing, movement }) => {
-    const { wallets, categories } = useData();
+const IncomeForm: React.FC<IncomeFormProps> = ({isEditing, movement, onUpdateTransactions}) => {
+    const {wallets, categories} = useData();
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const today = new Date().toISOString().split('T')[0];
@@ -67,7 +68,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ isEditing, movement }) => {
     }, [selectedCategory, categories]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
+        const {name, value, type} = e.target;
         const checked = (e.target as HTMLInputElement).checked;
         setFormData(prevState => ({
             ...prevState,
@@ -104,6 +105,8 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ isEditing, movement }) => {
             } else {
                 await createMovement(formattedData);
             }
+
+            onUpdateTransactions();
         } catch (error) {
             console.error('Error creating or updating movement:', error);
         }
@@ -119,7 +122,8 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ isEditing, movement }) => {
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="amount">Valor</label>
-                    <input type="number" step="0.01" id="amount" name="amount" value={formData.amount} onChange={handleChange}/>
+                    <input type="number" step="0.01" id="amount" name="amount" value={formData.amount}
+                           onChange={handleChange}/>
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="date">Data</label>

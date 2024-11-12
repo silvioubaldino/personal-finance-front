@@ -17,9 +17,10 @@ const mockTypePayment = [
 type ExpenseFormProps = {
     isEditing: boolean;
     movement?: Movement;
+    onUpdateTransactions: () => void;
 };
 
-const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement }) => {
+const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdateTransactions }) => {
     const { wallets, categories } = useData();
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -99,11 +100,13 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement }) => {
                 delete formattedData.sub_category_id;
             }
 
-            if (isEditing && movement && movement) {
+            if (isEditing && movement) {
                 await updateMovement(movement.id, formattedData);
             } else {
                 await createMovement(formattedData);
             }
+
+            onUpdateTransactions();
         } catch (error) {
             console.error('Error creating or updating movement:', error);
         }

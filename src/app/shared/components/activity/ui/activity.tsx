@@ -8,6 +8,7 @@ import {useData} from "@/app/shared/components/context/ui/movements-context";
 import {useMonth} from "@/app/shared/components/context/ui/MonthContext";
 import ClientOnlyModal from "@/app/shared/components/add/ui/add";
 import ConfirmationModal from "@/app/shared/components/confirmationmodal/ui/confirmationModal";
+import AddButton from "@/app/shared/components/add/ui/AddButton";
 
 const Activity = () => {
     const [transactions, setTransactions] = useState<Movement[]>([]);
@@ -18,19 +19,18 @@ const Activity = () => {
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
     const [movementIDToDelete, setMovementIDToDelete] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchMovements = async () => {
-            try {
-                if (currentMonth.from && currentMonth.to) {
-                    const movements = await getMovements(currentMonth.from, currentMonth.to);
-                    setTransactions(movements);
-                    setData(movements);
-                }
-            } catch (error) {
-                console.error('Failed to fetch movements:', error);
+    const fetchMovements = async () => {
+        try {
+            if (currentMonth.from && currentMonth.to) {
+                const movements = await getMovements(currentMonth.from, currentMonth.to);
+                setTransactions(movements);
+                setData(movements);
             }
-        };
-
+        } catch (error) {
+            console.error('Failed to fetch movements:', error);
+        }
+    };
+    useEffect(() => {
         fetchMovements();
     }, [currentMonth]);
 
@@ -128,11 +128,13 @@ const Activity = () => {
                     </div>
                 </div>
             ))}
+            <AddButton onUpdateTransactions={fetchMovements}/>
             <ClientOnlyModal
                 isEditing={!!editingMovement}
                 movement={editingMovement}
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}/>
+                onClose={() => setIsModalOpen(false)}
+                onUpdateTransactions={fetchMovements}/>
             <ConfirmationModal
                 isOpen={isConfirmationOpen}
                 onClose={() => setIsConfirmationOpen(false)}
