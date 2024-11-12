@@ -257,6 +257,16 @@ export const updateMovement = async (id: string, movement: AddMovement) => {
     }
 };
 
+export const deleteMovement = async (id: string) => {
+    try {
+        const response = await api.delete(`/movements/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error deleting movement with id ${id}`, error);
+        throw error;
+    }
+};
+
 export const payMovement = async (id: string) => {
     try {
         const response = await api.post(`/movements/${id}/pay`);

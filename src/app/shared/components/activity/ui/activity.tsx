@@ -1,12 +1,13 @@
 'use client';
 import React, {useEffect, useState} from 'react';
 import styles from '../styles/activity.module.css';
-import {getMovements, Movement, payMovement, revertPayMovement} from "@/services/api";
+import {deleteMovement, getMovements, Movement, payMovement, revertPayMovement} from "@/services/api";
 import {addHours, format} from 'date-fns';
-import {LuCircleSlash2, LuDollarSign, LuPenSquare} from "react-icons/lu";
+import {LuCircleSlash2, LuDollarSign, LuPenSquare, LuTrash2} from "react-icons/lu";
 import {useData} from "@/app/shared/components/context/ui/movements-context";
 import {useMonth} from "@/app/shared/components/context/ui/MonthContext";
 import ClientOnlyModal from "@/app/shared/components/add/ui/add";
+import ConfirmationModal from "@/app/shared/components/confirmationmodal/ui/confirmationModal";
 
 const Activity = () => {
     const [transactions, setTransactions] = useState<Movement[]>([]);
@@ -14,6 +15,8 @@ const Activity = () => {
     const {currentMonth} = useMonth();
     const [editingMovement, setEditingMovement] = useState<Movement>();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [movementIDToDelete, setMovementIDToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchMovements = async () => {
@@ -56,6 +59,26 @@ const Activity = () => {
         setIsModalOpen(true);
     };
 
+    const handleDelete = (movementID: string) => {
+        setMovementIDToDelete(movementID);
+        setIsConfirmationOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (movementIDToDelete) {
+            try {
+                await deleteMovement(movementIDToDelete);
+                const movements = await getMovements(currentMonth.from, currentMonth.to);
+                setTransactions(movements);
+            } catch (error) {
+                console.error(`Failed to delete movement with id ${movementIDToDelete}`, error);
+            } finally {
+                setIsConfirmationOpen(false);
+                setMovementIDToDelete(null);
+            }
+        }
+    };
+
     return (
         <div className={styles.container}>
             {transactions.map((transaction, index) => (
@@ -65,7 +88,7 @@ const Activity = () => {
                             {transaction.description}
                             <div className={styles.category}>
                                 {transaction.category.description}
-                                {transaction.sub_category && transaction.sub_category.id &&` > ${transaction.sub_category.description}`}
+                                {transaction.sub_category && transaction.sub_category.id && ` > ${transaction.sub_category.description}`}
                             </div>
                         </div>
                         <div className={styles.date}>
@@ -98,6 +121,9 @@ const Activity = () => {
                             <button title="Editar" onClick={() => handleEdit(transaction)}>
                                 <LuPenSquare size={20}/>
                             </button>
+                            <button title="Apagar" onClick={() => handleDelete(transaction.id)}>
+                                <LuTrash2 size={20}/>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -107,6 +133,11 @@ const Activity = () => {
                 movement={editingMovement}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}/>
+            <ConfirmationModal
+                isOpen={isConfirmationOpen}
+                onClose={() => setIsConfirmationOpen(false)}
+                onConfirm={confirmDelete}
+                message="Apagar movimentação?"/>
         </div>
     );
 };

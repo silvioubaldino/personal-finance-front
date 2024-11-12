@@ -1,0 +1,44 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalContent {
+    background: #1E1E1E;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    color: #9F9F9F;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+.confirmButton {
+    background: #DA6A68;
+    color: #000;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancelButton {
+    background: #666;
+    color: #000;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
