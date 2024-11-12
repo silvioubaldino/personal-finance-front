@@ -7,7 +7,7 @@ interface AddWalletFormProps {
 
 const AddWalletForm: React.FC<AddWalletFormProps> = ({ onSubmit }) => {
     const [name, setName] = useState('');
-    const [initialBalance, setInitialBalance] = useState('');
+    const [initialBalance, setInitialBalance] = useState(0);
     const [initialDate, setInitialDate] = useState(() => {
         const today = new Date();
         return today.toISOString().split('T')[0];
@@ -15,7 +15,7 @@ const AddWalletForm: React.FC<AddWalletFormProps> = ({ onSubmit }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(name, parseFloat(initialBalance), initialDate);
+        onSubmit(name, initialBalance, initialDate);
     };
 
     return (
@@ -26,7 +26,7 @@ const AddWalletForm: React.FC<AddWalletFormProps> = ({ onSubmit }) => {
             </div>
             <div className={styles.formGroup}>
                 <label>Saldo inicial:</label>
-                <input type="number" value={initialBalance} onChange={(e) => setInitialBalance(e.target.value)} required />
+                <input type="number" value={initialBalance} onChange={(e) => setInitialBalance(parseFloat(e.target.value))} required />
             </div>
             <div className={styles.formGroup}>
                 <label>Data do saldo inicial:</label>
