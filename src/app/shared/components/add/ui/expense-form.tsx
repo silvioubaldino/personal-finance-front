@@ -30,6 +30,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdate
         amount: 0,
         date: today,
         is_paid: false,
+        is_recurrent: false,
         wallet_id: '',
         type_payment_id: 4,
         category_id: '',
@@ -44,6 +45,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdate
                     amount: movement.amount,
                     date: movement.date.split('T')[0],
                     is_paid: movement.is_paid,
+                    is_recurrent: movement.is_recurrent,
                     wallet_id: movement.wallet.id,
                     type_payment_id: movement.type_payment_id,
                     category_id: movement.category.id,
@@ -130,6 +132,10 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdate
                 <div className={styles.formGroup}>
                     <label htmlFor="is_paid">Pago</label>
                     <input type="checkbox" id="is_paid" name="is_paid" checked={formData.is_paid} onChange={handleChange} />
+                </div>
+                <div className={styles.formGroup}>
+                    <label htmlFor="is_recurrent">Recorrente</label>
+                    <input type="checkbox" id="is_recurrent" name="is_recurrent" checked={formData.is_recurrent} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="wallet_id">Carteira</label>
