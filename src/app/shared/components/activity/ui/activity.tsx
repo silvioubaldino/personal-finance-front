@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import styles from '../styles/activity.module.css';
 import {deleteMovement, getMovements, Movement, payMovement, revertPayMovement} from "@/services/api";
 import {addHours, format} from 'date-fns';
-import {LuCircleSlash2, LuDollarSign, LuPenSquare, LuTrash2} from "react-icons/lu";
+import {LuCircleSlash2, LuDollarSign, LuIterationCw, LuPenSquare, LuTrash2} from "react-icons/lu";
 import {useData} from "@/app/shared/components/context/ui/movements-context";
 import {useMonth} from "@/app/shared/components/context/ui/MonthContext";
 import ClientOnlyModal from "@/app/shared/components/add/ui/add";
@@ -85,7 +85,10 @@ const Activity = () => {
                 <div key={index} className={styles.transaction}>
                     <div className={styles.row}>
                         <div className={styles.description}>
-                            {transaction.description}
+                            <span className={styles.descriptionText}>
+                                {transaction.description}
+                                {transaction.is_recurrent && <LuIterationCw size={20} title={'Transação recorrente'} className={styles.recurrentIcon}/>}
+                            </span>
                             <div className={styles.category}>
                                 {transaction.category.description}
                                 {transaction.sub_category && transaction.sub_category.id && ` > ${transaction.sub_category.description}`}
