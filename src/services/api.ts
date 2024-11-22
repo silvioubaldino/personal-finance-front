@@ -23,6 +23,7 @@ export type Movement = {
     amount: number;
     date: string;
     is_paid: boolean;
+    is_recurrent: boolean;
     wallet: Wallet;
     type_payment_id: number;
     category: Category
@@ -172,6 +173,7 @@ const toMovements = (response: any): Movement[] => {
             amount: movement.amount,
             date: movement.date,
             is_paid: movement.is_paid,
+            is_recurrent: movement.is_recurrent,
             wallet: toWallet(movement.wallet),
             type_payment_id: movement.type_payment_id,
             category: toCategory(movement.category),
