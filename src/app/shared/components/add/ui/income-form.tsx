@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import styles from '../styles/form.module.css';
-import {AddMovement, createMovement, Movement, updateMovement} from "@/services/api";
+import {AddMovement, createMovement, Movement, updateAllNextMovement, updateMovement} from "@/services/api";
 import {format} from "date-fns";
 import {useData} from "@/app/shared/components/context/ui/common-data-context";
+import RecurrentTypeModal from "@/app/shared/components/confirmationmodal/ui/recurrentTypeModal";
 
 type SubCategory = {
     id: string;
@@ -25,6 +26,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({isEditing, movement, onUpdateTra
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const today = new Date().toISOString().split('T')[0];
+    const [isRecurrentTypeModalOpen, setIsRecurrentTypeModalOpen] = useState(false);
     const [formData, setFormData] = useState<AddMovement>({
         description: '',
         amount: 0,
@@ -80,6 +82,14 @@ const IncomeForm: React.FC<IncomeFormProps> = ({isEditing, movement, onUpdateTra
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isEditing && movement?.is_recurrent) {
+            setIsRecurrentTypeModalOpen(true);
+        } else {
+            await saveMovement();
+        }
+    };
+
+    const saveMovement = async (updateAllNext?: boolean) => {
         let adjustedAmount = Number(formData.amount);
         if (adjustedAmount <= 0) {
             adjustedAmount = -adjustedAmount;
@@ -103,7 +113,11 @@ const IncomeForm: React.FC<IncomeFormProps> = ({isEditing, movement, onUpdateTra
             }
 
             if (isEditing && movement && movement) {
-                await updateMovement(movement.id, formattedData);
+                if (updateAllNext) {
+                    await updateAllNextMovement(movement.id, formattedData);
+                } else {
+                    await updateMovement(movement.id, formattedData);
+                }
             } else {
                 await createMovement(formattedData);
             }
@@ -184,6 +198,19 @@ const IncomeForm: React.FC<IncomeFormProps> = ({isEditing, movement, onUpdateTra
                 </div>
                 <button type="submit" className={styles.submitButton}>{isEditing ? 'Atualizar' : 'Adicionar'}</button>
             </form>
+            <RecurrentTypeModal
+                isOpen={isRecurrentTypeModalOpen}
+                onClose={() => setIsRecurrentTypeModalOpen(false)}
+                onConfirmSingle={async () => {
+                    setIsRecurrentTypeModalOpen(false);
+                    await saveMovement();
+                }}
+                onConfirmAll={async () => {
+                    setIsRecurrentTypeModalOpen(false);
+                    await saveMovement(true);
+                }}
+                message="Editar movimento recorrente"
+            />
         </div>
     );
 };
