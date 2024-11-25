@@ -260,6 +260,16 @@ export const updateMovement = async (id: string, movement: AddMovement) => {
     }
 };
 
+export const updateAllNextMovement = async (id: string, movement: AddMovement) => {
+    try {
+        const response = await api.put(`/movements/${id}/all-next`, movement);
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating movement with id ${id}`, error);
+        throw error;
+    }
+};
+
 export const deleteMovement = async (id: string) => {
     try {
         const response = await api.delete(`/movements/${id}`);

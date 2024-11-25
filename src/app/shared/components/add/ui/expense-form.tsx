@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from '../styles/form.module.css';
-import {AddMovement, createMovement, Movement, updateMovement} from "@/services/api";
+import {AddMovement, createMovement, Movement, updateAllNextMovement, updateMovement} from "@/services/api";
 import { format } from "date-fns";
 import { useData } from "@/app/shared/components/context/ui/common-data-context";
+import RecurrentTypeModal from "@/app/shared/components/confirmationmodal/ui/recurrentTypeModal";
 
 type SubCategory = {
     id: string;
@@ -25,6 +26,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdate
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const today = new Date().toISOString().split('T')[0];
+    const [isRecurrentTypeModalOpen, setIsRecurrentTypeModalOpen] = useState(false);
     const [formData, setFormData] = useState<AddMovement>({
         description: '',
         amount: 0,
@@ -80,6 +82,14 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdate
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isEditing && movement?.is_recurrent) {
+            setIsRecurrentTypeModalOpen(true);
+        } else {
+            await saveMovement();
+        }
+    };
+
+    const saveMovement = async (updateAllNext?: boolean) => {
         let adjustedAmount = formData.amount;
         if (adjustedAmount >= 0) {
             adjustedAmount = -adjustedAmount;
@@ -103,7 +113,11 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdate
             }
 
             if (isEditing && movement) {
-                await updateMovement(movement.id, formattedData);
+                if (updateAllNext) {
+                    await updateAllNextMovement(movement.id, formattedData);
+                } else {
+                    await updateMovement(movement.id, formattedData);
+                }
             } else {
                 await createMovement(formattedData);
             }
@@ -135,7 +149,14 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdate
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="is_recurrent">Recorrente</label>
-                    <input type="checkbox" id="is_recurrent" name="is_recurrent" checked={formData.is_recurrent} onChange={handleChange} />
+                    <input
+                        type="checkbox"
+                        id="is_recurrent"
+                        name="is_recurrent"
+                        checked={formData.is_recurrent}
+                        onChange={handleChange}
+                        disabled={isEditing}
+                    />
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="wallet_id">Carteira</label>
@@ -178,6 +199,19 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ isEditing, movement, onUpdate
                 </div>
                 <button type="submit" className={styles.submitButton}>{isEditing ? 'Atualizar' : 'Adicionar'}</button>
             </form>
+            <RecurrentTypeModal
+                isOpen={isRecurrentTypeModalOpen}
+                onClose={() => setIsRecurrentTypeModalOpen(false)}
+                onConfirmSingle={async () => {
+                    setIsRecurrentTypeModalOpen(false);
+                    await saveMovement();
+                }}
+                onConfirmAll={async () => {
+                    setIsRecurrentTypeModalOpen(false);
+                    await saveMovement(true);
+                }}
+                message="Editar movimento recorrente"
+            />
         </div>
     );
 };
