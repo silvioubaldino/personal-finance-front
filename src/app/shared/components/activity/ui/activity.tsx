@@ -45,7 +45,7 @@ const Activity = () => {
 
     const handlePay = async (id: string) => {
         try {
-            await payMovement(id);
+            await payMovement(id, currentMonth.to);
             const movements = await getMovements(currentMonth.from, currentMonth.to);
             setTransactions(movements);
         } catch (error) {
