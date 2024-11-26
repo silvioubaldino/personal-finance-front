@@ -24,6 +24,22 @@
   background-color: #6d9134;
 }
 
+.pageContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.walletAndChartContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.balanceContainer, .activityContainer, .walletAndChartContainer {
+  margin: 20px;
+}
+
 @media only screen and (min-width: 800px) {
   .grid-container {
     display: grid;

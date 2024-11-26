@@ -1,0 +1,49 @@
+.menuContainer {
+    display: flex;
+    flex-direction: column;
+    width: 270px;
+    background-color: #1E1E1E;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.menuHeader {
+    display: flex;
+    color: #9F9F9F;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menuList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 20px;
+}
+
+.menuItem {
+    position: relative;
+    padding: 18px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #9F9F9F;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.menuItem:hover {
+    background-color: #2A2A2A;
+}
+
+.menuLink {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}

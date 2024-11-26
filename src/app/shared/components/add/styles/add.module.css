@@ -1,0 +1,62 @@
+.buttonAdd {
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+    background-color: #1E1E1E;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.buttonAdd:hover {
+    background-color: #262626;
+    width: fit-content;
+    height: fit-content;
+}
+
+@media (max-width: 768px) {
+    .buttonAdd {
+        right: 10%;
+        bottom: 10%;
+    }
+}
+
+@media (max-width: 480px) {
+    .buttonAdd {
+        right: 15%;
+        bottom: 15%;
+    }
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    background-color: #666;
+    color: #000;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.button:hover {
+    background-color: #d0d0d0;
+}
+
+.active {
+    background-color: #d0d0d0;
+    color: #000;
+}
+
+.buttonDisabled {
+    color: #555;
+    cursor: not-allowed;
+    pointer-events: none;
+}

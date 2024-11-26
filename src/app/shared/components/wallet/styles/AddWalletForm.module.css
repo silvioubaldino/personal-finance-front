@@ -1,0 +1,52 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    color: #9F9F9F;
+    width: 400px;
+    padding: 20px;
+}
+
+.formGroup {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.formGroup label {
+    flex: 2;
+    margin-right: 20px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="date"],
+.formGroup input[type="number"] {
+    flex: 2;
+    padding: 8px;
+    border-radius: 4px;
+    width: 50%;
+    background-color: #000;
+    color: #9F9F9F;
+}
+
+.formGroup input[type="date"]::-webkit-calendar-picker-indicator {
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-calendar" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1zm1-1h12V3a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v1z"/></svg>');
+    background-color: #9F9F9F;
+    opacity: 1;
+}
+
+.submitButton {
+    background-color: #9F9F9F;
+    color: #1E1E1E;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px 20px;
+    margin: 0 auto; /* Centraliza o botão */
+    font-size: 1.2em;
+}
+
+.submitButton:hover {
+    background-color: #2b632d;
+}

@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.valueGreen {
+    background-color: #1E1E1E;
+    color: #78A272;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.valueRed {
+    background-color: #1E1E1E;
+    color: #DA6A68;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.valueYellow {
+    background-color: #1E1E1E;
+    color: #9F9885;
+    padding: 10px;
+    border-radius: 5px;
+}

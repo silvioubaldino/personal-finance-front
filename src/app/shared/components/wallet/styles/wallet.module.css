@@ -1,0 +1,101 @@
+.container {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #1E1E1E;
+    max-width: 400px;
+    margin: 0;
+}
+
+.container.editing {
+    width: 100%;
+    max-width: 100%;
+}
+
+.label {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #9F9F9F;
+    margin-bottom: 10px;
+}
+
+.value {
+    font-size: 1.5em;
+    color: #4caf50;
+}
+
+.list {
+    margin-top: 20px;
+    color: #9F9F9F;
+}
+
+.listItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.listItem span {
+    font-size: 1em;
+    flex: 1;
+    text-align: left;
+    padding: 0 10px;
+}
+
+.listItem .value {
+    text-align: right;
+}
+
+.button, .buttonEdit {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #9F9F9F;
+    padding: 5px;
+    font-size: 1.2em;
+    flex: 0;
+    margin-left: 10px
+}
+
+.editInfo {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+    padding: 0 10px;
+}
+
+.editInfo span {
+    font-size: 1em;
+    color: #9F9F9F;
+}
+
+.editInfo .value {
+    text-align: right;
+}
+
+.container .labelSmall {
+    font-size: 0.8em;
+    text-align: right;
+}
+
+.addButton {
+    background-color: #9F9F9F;
+    color: #1E1E1E;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 8px 20px;
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+.addButton:hover {
+    background-color: #707070;
+}
+
+.amountEdit {
+    padding: 4px;
+    border-radius: 4px;
+    Background-color: #000;
+    color: #9F9F9F;
+}
