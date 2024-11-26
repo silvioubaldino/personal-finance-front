@@ -23,6 +23,7 @@ export type Movement = {
     amount: number;
     date: string;
     is_paid: boolean;
+    is_recurrent: boolean;
     wallet: Wallet;
     type_payment_id: number;
     category: Category
@@ -48,6 +49,7 @@ export type AddMovement = {
     amount: number;
     date: string;
     is_paid: boolean;
+    is_recurrent: boolean;
     wallet_id: string;
     type_payment_id: number;
     category_id: string;
@@ -172,6 +174,7 @@ const toMovements = (response: any): Movement[] => {
             amount: movement.amount,
             date: movement.date,
             is_paid: movement.is_paid,
+            is_recurrent: movement.is_recurrent,
             wallet: toWallet(movement.wallet),
             type_payment_id: movement.type_payment_id,
             category: toCategory(movement.category),
@@ -257,9 +260,51 @@ export const updateMovement = async (id: string, movement: AddMovement) => {
     }
 };
 
-export const payMovement = async (id: string) => {
+export const updateAllNextMovement = async (id: string, movement: AddMovement) => {
     try {
-        const response = await api.post(`/movements/${id}/pay`);
+        const response = await api.put(`/movements/${id}/all-next`, movement);
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating movement with id ${id}`, error);
+        throw error;
+    }
+};
+
+export const deleteMovement = async (id: string, date: string) => {
+    try {
+        const response = await api.delete(`/movements/${id}`, {
+            params: {
+                date,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error deleting movement with id ${id}`, error);
+        throw error;
+    }
+};
+
+export const deleteAllNextMovement = async (id: string, date: string) => {
+    try {
+        const response = await api.delete(`/movements/${id}/all-next`, {
+            params: {
+                date,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error deleting movement with id ${id}`, error);
+        throw error;
+    }
+};
+
+export const payMovement = async (id: string, date: string) => {
+    try {
+        const response = await api.post(`/movements/${id}/pay`, undefined, {
+            params: {
+                date,
+            }
+        });
         return response.data;
     } catch (error) {
         console.error(`Error paying movement with id ${id}`, error);
