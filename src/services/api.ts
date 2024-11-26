@@ -270,9 +270,27 @@ export const updateAllNextMovement = async (id: string, movement: AddMovement) =
     }
 };
 
-export const deleteMovement = async (id: string) => {
+export const deleteMovement = async (id: string, date: string) => {
     try {
-        const response = await api.delete(`/movements/${id}`);
+        const response = await api.delete(`/movements/${id}`, {
+            params: {
+                date,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error deleting movement with id ${id}`, error);
+        throw error;
+    }
+};
+
+export const deleteAllNextMovement = async (id: string, date: string) => {
+    try {
+        const response = await api.delete(`/movements/${id}/all-next`, {
+            params: {
+                date,
+            }
+        });
         return response.data;
     } catch (error) {
         console.error(`Error deleting movement with id ${id}`, error);

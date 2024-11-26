@@ -1,7 +1,14 @@
 'use client';
 import React, {useEffect, useState} from 'react';
 import styles from '../styles/activity.module.css';
-import {deleteMovement, getMovements, Movement, payMovement, revertPayMovement} from "@/services/api";
+import {
+    deleteAllNextMovement,
+    deleteMovement,
+    getMovements,
+    Movement,
+    payMovement,
+    revertPayMovement
+} from "@/services/api";
 import {addHours, format} from 'date-fns';
 import {LuCircleSlash2, LuDollarSign, LuIterationCw, LuPenSquare, LuTrash2} from "react-icons/lu";
 import {useData} from "@/app/shared/components/context/ui/movements-context";
@@ -9,6 +16,7 @@ import {useMonth} from "@/app/shared/components/context/ui/MonthContext";
 import ClientOnlyModal from "@/app/shared/components/add/ui/add";
 import ConfirmationModal from "@/app/shared/components/confirmationmodal/ui/confirmationModal";
 import AddButton from "@/app/shared/components/add/ui/AddButton";
+import RecurrentTypeModal from "@/app/shared/components/confirmationmodal/ui/recurrentTypeModal";
 
 const Activity = () => {
     const [transactions, setTransactions] = useState<Movement[]>([]);
@@ -17,6 +25,7 @@ const Activity = () => {
     const [editingMovement, setEditingMovement] = useState<Movement>();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [isRecurrentTypeModalOpen, setIsRecurrentTypeModalOpen] = useState(false);
     const [movementIDToDelete, setMovementIDToDelete] = useState<string | null>(null);
 
     const fetchMovements = async () => {
@@ -59,21 +68,30 @@ const Activity = () => {
         setIsModalOpen(true);
     };
 
-    const handleDelete = (movementID: string) => {
-        setMovementIDToDelete(movementID);
-        setIsConfirmationOpen(true);
+    const handleDelete = (movement: Movement) => {
+        setMovementIDToDelete(movement.id);
+        if (movement.is_recurrent) {
+            setIsRecurrentTypeModalOpen(true);
+        } else {
+            setIsConfirmationOpen(true);
+        }
     };
 
-    const confirmDelete = async () => {
+    const confirmDelete = async (updateAllNext?: boolean) => {
         if (movementIDToDelete) {
             try {
-                await deleteMovement(movementIDToDelete);
+                if (updateAllNext) {
+                    await deleteAllNextMovement(movementIDToDelete, currentMonth.to);
+                } else {
+                    await deleteMovement(movementIDToDelete, currentMonth.to);
+                }
                 const movements = await getMovements(currentMonth.from, currentMonth.to);
                 setTransactions(movements);
             } catch (error) {
                 console.error(`Failed to delete movement with id ${movementIDToDelete}`, error);
             } finally {
                 setIsConfirmationOpen(false);
+                setIsRecurrentTypeModalOpen(false);
                 setMovementIDToDelete(null);
             }
         }
@@ -87,7 +105,8 @@ const Activity = () => {
                         <div className={styles.description}>
                             <span className={styles.descriptionText}>
                                 {transaction.description}
-                                {transaction.is_recurrent && <LuIterationCw size={20} title={'Transação recorrente'} className={styles.recurrentIcon}/>}
+                                {transaction.is_recurrent && <LuIterationCw size={20} title={'Transação recorrente'}
+                                                                            className={styles.recurrentIcon}/>}
                             </span>
                             <div className={styles.category}>
                                 {transaction.category.description}
@@ -124,7 +143,7 @@ const Activity = () => {
                             <button title="Editar" onClick={() => handleEdit(transaction)}>
                                 <LuPenSquare size={20}/>
                             </button>
-                            <button title="Apagar" onClick={() => handleDelete(transaction.id)}>
+                            <button title="Apagar" onClick={() => handleDelete(transaction)}>
                                 <LuTrash2 size={20}/>
                             </button>
                         </div>
@@ -141,8 +160,22 @@ const Activity = () => {
             <ConfirmationModal
                 isOpen={isConfirmationOpen}
                 onClose={() => setIsConfirmationOpen(false)}
-                onConfirm={confirmDelete}
+                onConfirm={async () => {
+                    await confirmDelete(false)
+                }}
                 message="Apagar movimentação?"/>
+            <RecurrentTypeModal
+                isOpen={isRecurrentTypeModalOpen}
+                onClose={() => setIsRecurrentTypeModalOpen(false)}
+                onConfirmSingle={async () => {
+                    setIsRecurrentTypeModalOpen(false);
+                    await confirmDelete(false);
+                }}
+                onConfirmAll={async () => {
+                    setIsRecurrentTypeModalOpen(false);
+                    await confirmDelete(true);
+                }}
+                message="Deseja apagar apenas esta transação ou todas as próximas?"/>
         </div>
     );
 };
