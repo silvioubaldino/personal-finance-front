@@ -298,9 +298,13 @@ export const deleteAllNextMovement = async (id: string, date: string) => {
     }
 };
 
-export const payMovement = async (id: string) => {
+export const payMovement = async (id: string, date: string) => {
     try {
-        const response = await api.post(`/movements/${id}/pay`);
+        const response = await api.post(`/movements/${id}/pay`, undefined, {
+            params: {
+                date,
+            }
+        });
         return response.data;
     } catch (error) {
         console.error(`Error paying movement with id ${id}`, error);
